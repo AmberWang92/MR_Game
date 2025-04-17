@@ -41,9 +41,9 @@ public class BossController : MonoBehaviour
 
         // 计算目标位置：距离玩家 1.5 米远的地面上方 1.5 米
         Vector3 targetPos = cameraTransform.position + forward * 1.5f;
-        targetPos.y = floorAnchor.transform.position.y + 1.5f; // 悬浮在地面上 1.5m
+        targetPos.y = floorAnchor.transform.position.y + 0.3f; // 悬浮在地面上 0.5m
 
-        // 移动 Boss 到该位置
+        //// 移动 Boss 到该位置
         transform.position = targetPos;
 
         Debug.Log("Boss moved to position: " + targetPos);

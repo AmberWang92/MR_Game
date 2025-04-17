@@ -25,7 +25,7 @@ public class PunchDetector : MonoBehaviour
             {
                 if (hit.collider.CompareTag("Boss"))
                 {
-                    hit.collider.GetComponent<BossHealth>().TakeDamage(punchDamage);
+                    hit.collider.GetComponentInParent<BossHealth>().TakeDamage(punchDamage);
                     Debug.Log("Boss Hit!");
                     lastPunchTime = Time.time;
                 }
