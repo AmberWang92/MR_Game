@@ -12,6 +12,10 @@ public class BossController : MonoBehaviour
     private float timer = 0f;
     private Transform cameraTransform;
 
+    public GameObject laserRingPrefab;  
+    public Transform laserSpawnPoint;   
+    public float laserDuration = 5f;    
+
     void Start()
     {
         cameraTransform = Camera.main.transform;
@@ -60,6 +64,7 @@ public class BossController : MonoBehaviour
         if (timer >= attackInterval)
         {
             StartCoroutine(SprayInk());
+            StartCoroutine(FireLaserRing());
             timer = 0f;
         }
     }
@@ -74,6 +79,18 @@ public class BossController : MonoBehaviour
         inkEffect.Stop();
 
         isSpraying = false;
+    }
+
+    IEnumerator FireLaserRing()
+    {
+        Debug.Log("Laser Attack Incoming!");
+        GameObject laser = Instantiate(laserRingPrefab, laserSpawnPoint.position, Quaternion.identity);
+
+
+        laser.transform.rotation = Quaternion.LookRotation(Vector3.up);
+        Debug.Log("Laser Spawn Position: " + laserSpawnPoint);
+
+        yield return null;
     }
 
     public bool IsSpraying()
