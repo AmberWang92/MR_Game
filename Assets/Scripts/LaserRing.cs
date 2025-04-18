@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class LaserRing : MonoBehaviour
 {
-    public float duration = 5f;         // ¼¤¹â³ÖÐøÊ±¼ä
-    public float expandSpeed = 0.8f;    // Ã¿ÃëÀ©´ó¶àÉÙ±¶
+    public float duration = 5f;         // æ¿€å…‰æŒç»­æ—¶é—´
+    public float expandSpeed = 1.0f;    // æ¯ç§’æ‰©å¤§å¤šå°‘å€
 
     private float timer = 0f;
     private Vector3 initialScale;
@@ -17,13 +17,26 @@ public class LaserRing : MonoBehaviour
     {
         timer += Time.deltaTime;
 
-        // »ºÂýÀ©´ó
+        // ç¼“æ…¢æ‰©å¤§
         float scaleFactor = 1f + expandSpeed * timer;
         transform.localScale = initialScale * scaleFactor;
 
         if (timer >= duration)
         {
             Destroy(gameObject);
+        }
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        PlayerHealth playerHealth = other.GetComponent<PlayerHealth>();
+        if (playerHealth == null)
+        {
+            playerHealth = other.GetComponentInParent<PlayerHealth>();
+        }
+        if (playerHealth != null)
+        {
+            playerHealth.TakeDamage();
         }
     }
 }

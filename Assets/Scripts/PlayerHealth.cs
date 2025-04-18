@@ -29,7 +29,7 @@ public class PlayerHealth : MonoBehaviour
     void Die()
     {
         Debug.Log("Player died!");
-        // TODO: 玩家死亡逻辑，例如暂停游戏、重置场景、播放动画等
+               // TODO: 玩家死亡逻辑，例如暂停游戏、重置场景、播放动画等
     }
 
     void UpdateHeartsUI()
