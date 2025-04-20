@@ -1,9 +1,14 @@
-﻿using UnityEngine;
-
+﻿using Oculus.Haptics;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using TMPro;
 public class PlayerHealth : MonoBehaviour
 {
     public int maxLives = 3;
     private int currentLives;
+
+    public GameObject deathUI;
+    public float restartDelay = 3f;
 
     void Start()
     {
@@ -17,6 +22,8 @@ public class PlayerHealth : MonoBehaviour
         currentLives = Mathf.Max(currentLives, 0);
 
         Debug.Log("Player hit! Lives left: " + currentLives);
+        GetComponent<HapticTrigger>().TriggerHaptics(OVRInput.Controller.RTouch);
+        GetComponent<HapticTrigger>().TriggerHaptics(OVRInput.Controller.LTouch);
 
         UpdateHeartsUI();
 
@@ -25,13 +32,6 @@ public class PlayerHealth : MonoBehaviour
             Die();
         }
     }
-
-    void Die()
-    {
-        Debug.Log("Player died!");
-               // TODO: 玩家死亡逻辑，例如暂停游戏、重置场景、播放动画等
-    }
-
     void UpdateHeartsUI()
     {
         // TODO: 这里之后可以挂心形 UI 更新逻辑
@@ -42,4 +42,16 @@ public class PlayerHealth : MonoBehaviour
     {
         return currentLives;
     }
+
+    void Die()
+    {
+        Debug.Log("Player died!");
+        if (deathUI != null)
+            deathUI.SetActive(true);
+    }
+   public void Restart()
+{
+    SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+}
+
 }

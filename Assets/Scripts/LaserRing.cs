@@ -3,7 +3,7 @@ using UnityEngine;
 public class LaserRing : MonoBehaviour
 {
     public float duration = 5f;         // 激光持续时间
-    public float expandSpeed = 1.0f;    // 每秒扩大多少倍
+    public float expandSpeed = 0.8f;    // 每秒扩大多少倍
 
     private float timer = 0f;
     private Vector3 initialScale;
@@ -37,6 +37,7 @@ public class LaserRing : MonoBehaviour
         if (playerHealth != null)
         {
             playerHealth.TakeDamage();
+
         }
     }
 }

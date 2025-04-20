@@ -1,9 +1,10 @@
 using UnityEngine;
 
+
 public class PunchDetector : MonoBehaviour
 {
-    public float punchThreshold = 1.0f; // µ÷ÕûÎªºÏÊÊµÄËÙ¶ÈãÐÖµ
-    public float punchCooldown = 0.5f; // ·ÀÖ¹¶ÌÊ±¼äÄÚÖØ¸´¹¥»÷
+    public float punchThreshold = 1.0f; // ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½Êµï¿½ï¿½Ù¶ï¿½ï¿½ï¿½Öµ
+    public float punchCooldown = 0.5f; // ï¿½ï¿½Ö¹ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½Ø¸ï¿½ï¿½ï¿½ï¿½ï¿½
     public int punchDamage = 10;
 
     private Vector3 lastPosition;
@@ -28,6 +29,7 @@ public class PunchDetector : MonoBehaviour
                     hit.collider.GetComponentInParent<BossHealth>().TakeDamage(punchDamage);
                     Debug.Log("Boss Hit!");
                     lastPunchTime = Time.time;
+                    //MRHaptics.PlayHapticImpulse(hand, 0.7f, 0.25f);
                 }
             }
         }
@@ -35,7 +37,7 @@ public class PunchDetector : MonoBehaviour
         lastPosition = transform.position;
     }
 
-    //¿ÉÊÓ»¯ÉäÏß£¬·½±ãµ÷ÊÔÈ­»÷·½Ïò
+    //ï¿½ï¿½ï¿½Ó»ï¿½ï¿½ï¿½ï¿½ß£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È­ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     void OnDrawGizmos()
     {
         if (Application.isPlaying)

@@ -20,7 +20,7 @@ public class BossController : MonoBehaviour
     {
         cameraTransform = Camera.main.transform;
 
-        // ×¢²á³¡¾°¼ÓÔØÍê³ÉµÄ»Øµ÷
+        // æ³¨å†Œåœºæ™¯åŠ è½½å®Œæˆçš„å›è°ƒ
         MRUK.Instance.RegisterSceneLoadedCallback(OnSceneLoaded);
     }
 
@@ -28,7 +28,7 @@ public class BossController : MonoBehaviour
     {
         Debug.Log("MRUK Initialized");
 
-        // »ñÈ¡µ±Ç°·¿¼äºÍµØ°å Anchor
+        // è·å–å½“å‰æˆ¿é—´å’Œåœ°æ¿ Anchor
         var currentRoom = MRUK.Instance.GetCurrentRoom();
         if (currentRoom == null || currentRoom.FloorAnchor == null)
         {
@@ -38,16 +38,16 @@ public class BossController : MonoBehaviour
 
         var floorAnchor = currentRoom.FloorAnchor;
 
-        // »ñÈ¡Íæ¼ÒÊÓ½Ç²¢³¯Ïò
+        // è·å–ç©å®¶è§†è§’å¹¶æœå‘
         Vector3 forward = cameraTransform.forward;
         forward.y = 0;
         forward.Normalize();
 
-        // ¼ÆËãÄ¿±êÎ»ÖÃ£º¾àÀëÍæ¼Ò 1.5 Ã×Ô¶µÄµØÃæÉÏ·½ 1.5 Ã×
+        // è®¡ç®—ç›®æ ‡ä½ç½®ï¼šè·ç¦»ç©å®¶ 1.5 ç±³è¿œçš„åœ°é¢ä¸Šæ–¹ 1.5 ç±³
         Vector3 targetPos = cameraTransform.position + forward * 1.5f;
-        targetPos.y = floorAnchor.transform.position.y + 0.3f; // Ğü¸¡ÔÚµØÃæÉÏ 0.5m
+        targetPos.y = floorAnchor.transform.position.y + 0.3f; // æ‚¬æµ®åœ¨åœ°é¢ä¸Š 0.3m
 
-        //// ÒÆ¶¯ Boss µ½¸ÃÎ»ÖÃ
+        //// ç§»åŠ¨ Boss åˆ°è¯¥ä½ç½®
         transform.position = targetPos;
 
         Debug.Log("Boss moved to position: " + targetPos);
@@ -57,7 +57,7 @@ public class BossController : MonoBehaviour
     {
         timer += Time.deltaTime;
 
-        // Ê¼ÖÕ³¯ÏòÍæ¼Ò
+        // å§‹ç»ˆæœå‘ç©å®¶
         Vector3 lookAt = new Vector3(cameraTransform.position.x, transform.position.y, cameraTransform.position.z);
         transform.LookAt(lookAt);
 
