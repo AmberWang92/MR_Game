@@ -1,13 +1,13 @@
-﻿using Oculus.Haptics;
+using Oculus.Haptics;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
+
 public class PlayerHealth : MonoBehaviour
 {
     public int maxLives = 3;
     private int currentLives;
 
-    public GameObject deathUI;
     public float restartDelay = 3f;
 
     void Start()
@@ -46,12 +46,15 @@ public class PlayerHealth : MonoBehaviour
     void Die()
     {
         Debug.Log("Player died!");
-        if (deathUI != null)
-            deathUI.SetActive(true);
+        UIManager.Instance.ShowDeathUI();
     }
    public void Restart()
 {
     SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
 }
+    public void QuitGame()
+    {
+        Application.Quit();
+    }
 
 }

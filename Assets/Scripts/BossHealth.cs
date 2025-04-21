@@ -4,14 +4,14 @@ using UnityEngine.UI;
 public class BossHealth : MonoBehaviour
 {
     public int maxHealth = 100;
-    public Slider healthSlider;
+    public Image healthBarImage;
 
     private int currentHealth;
 
     void Start()
     {
         currentHealth = maxHealth;
-        if (healthSlider) healthSlider.maxValue = maxHealth;
+        if (healthBarImage) healthBarImage.fillAmount = maxHealth/100;
     }
 
     public void TakeDamage(int amount)
@@ -19,7 +19,7 @@ public class BossHealth : MonoBehaviour
         currentHealth -= amount;
         currentHealth = Mathf.Max(0, currentHealth);
 
-        if (healthSlider) healthSlider.value = currentHealth;
+        if (healthBarImage) healthBarImage.fillAmount = currentHealth/100.0f;
 
         if (currentHealth <= 0)
         {
