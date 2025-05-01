@@ -29,16 +29,17 @@ public class UIManager : MonoBehaviour
         // 只有 deathUI 激活时才同步
         if (deathUI != null && deathUI.activeSelf && bossTransform != null && playerTransform != null)
         {
-            // 跟随 boss 位置（可加偏移）
-            deathUI.transform.position = bossTransform.position + new Vector3(0, 1f, -0.5f); // 2f为高度偏移，可调整
+            // Calculate a position 1 meter in front of the player and 1 meter higher
+            Vector3 directionToPlayer = (playerTransform.position - bossTransform.position).normalized;
+            deathUI.transform.position = playerTransform.position - directionToPlayer + new Vector3(0, 1f, 0);
 
             Debug.Log("Boss Position: " + bossTransform.position);
 
-            // 朝向 player
+            // Ensure the UI faces the player
             deathUI.transform.LookAt(playerTransform);
-    
-            // 让 UI 正面朝向 player（如果 UI 反了，加180度旋转）
-            deathUI.transform.Rotate(0, 180, 0);
+
+            // Correct the rotation to maintain horizontal orientation and rotate 90 degrees outward
+            deathUI.transform.Rotate(60, 180, 0);
         }
     }
 

@@ -2,6 +2,7 @@ using Oculus.Haptics;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
+using System.Collections.Generic;
 
 public class PlayerHealth : MonoBehaviour
 {
@@ -10,10 +11,24 @@ public class PlayerHealth : MonoBehaviour
 
     public float restartDelay = 3f;
 
+    public GameObject heartPrefab; // Reference to the heart prefab
+    public Transform heartContainer; // Parent transform to hold heart instances
+    private List<GameObject> hearts = new List<GameObject>();
+
     void Start()
     {
         currentLives = maxLives;
+        InitializeHeartsUI();
         UpdateHeartsUI();
+    }
+
+    void InitializeHeartsUI()
+    {
+        for (int i = 0; i < maxLives; i++)
+        {
+            GameObject heart = Instantiate(heartPrefab, heartContainer);
+            hearts.Add(heart);
+        }
     }
 
     public void TakeDamage(int amount = 1)
@@ -32,9 +47,13 @@ public class PlayerHealth : MonoBehaviour
             Die();
         }
     }
+
     void UpdateHeartsUI()
     {
-        // TODO: 这里之后可以挂心形 UI 更新逻辑
+        for (int i = 0; i < hearts.Count; i++)
+        {
+            hearts[i].SetActive(i < currentLives);
+        }
         Debug.Log("❤️ x " + currentLives);
     }
 
@@ -48,13 +67,14 @@ public class PlayerHealth : MonoBehaviour
         Debug.Log("Player died!");
         UIManager.Instance.ShowDeathUI();
     }
-   public void Restart()
-{
-    SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-}
+
+    public void Restart()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
     public void QuitGame()
     {
         Application.Quit();
     }
-
 }

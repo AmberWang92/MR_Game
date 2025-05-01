@@ -1,10 +1,19 @@
 # ninja log v5
 118	10692	7664464863789740	GameActivity/CMakeFiles/game.dir/UGAInputKeyEvent.cpp.o	8d5bfe016fd74ff6
 102	10818	7664464864303185	GameActivity/CMakeFiles/game.dir/UGAEntry.cpp.o	538cb1da1ead0ec
-66	10970	7664464866732969	GameActivity/CMakeFiles/game.dir/UGAConfiguration.cpp.o	98ac57ef657e634b
-170	11020	7664464867437958	GameActivity/CMakeFiles/game.dir/UGAInputMotionEvent.cpp.o	d48f92608f9e7af2
-49	11803	7664464875061998	GameActivity/CMakeFiles/game.dir/UGADebug.cpp.o	24625c6dc80d3ded
 193	12342	7664464881143891	GameActivity/CMakeFiles/game.dir/UGASoftKeyboard.cpp.o	9cc9c1c0e0803bc0
+66	10970	7664464866732969	GameActivity/CMakeFiles/game.dir/UGAConfiguration.cpp.o	98ac57ef657e634b
+49	11803	7664464875061998	GameActivity/CMakeFiles/game.dir/UGADebug.cpp.o	24625c6dc80d3ded
+170	11020	7664464867437958	GameActivity/CMakeFiles/game.dir/UGAInputMotionEvent.cpp.o	d48f92608f9e7af2
 84	13302	7664464890505042	GameActivity/CMakeFiles/game.dir/UGAInput.cpp.o	6da54a3ff52054ca
 3	13955	7664464896363324	GameActivity/CMakeFiles/game.dir/UGAApplication.cpp.o	232b1578eca770da
 13956	14617	7664464903922636	C:/Users/AmberWang/Desktop/MR_Game/MR_Game/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/1r5l646y/obj/arm64-v8a/libgame.so	55a34f149004791c
+50	11467	7670570062584678	GameActivity/CMakeFiles/game.dir/UGAEntry.cpp.o	538cb1da1ead0ec
+139	11502	7670570062972773	GameActivity/CMakeFiles/game.dir/UGAInputKeyEvent.cpp.o	8d5bfe016fd74ff6
+68	11625	7670570065791422	GameActivity/CMakeFiles/game.dir/UGAConfiguration.cpp.o	98ac57ef657e634b
+117	11724	7670570065750450	GameActivity/CMakeFiles/game.dir/UGAInputMotionEvent.cpp.o	d48f92608f9e7af2
+84	12423	7670570074314654	GameActivity/CMakeFiles/game.dir/UGADebug.cpp.o	24625c6dc80d3ded
+100	13002	7670570080295998	GameActivity/CMakeFiles/game.dir/UGAInput.cpp.o	6da54a3ff52054ca
+29	13364	7670570083889758	GameActivity/CMakeFiles/game.dir/UGAApplication.cpp.o	232b1578eca770da
+469	13519	7670570085416350	GameActivity/CMakeFiles/game.dir/UGASoftKeyboard.cpp.o	9cc9c1c0e0803bc0
+13519	14025	7670570090496635	C:/Users/AmberWang/Desktop/MR_Game/MR_Game/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/1r5l646y/obj/arm64-v8a/libgame.so	55a34f149004791c
