@@ -4,7 +4,7 @@ public class LaserRing : MonoBehaviour
 {
     public float duration = 5f;         // 激光持续时间
     public float expandSpeed = 0.8f;    // 每秒扩大多少倍
-    public float crouchHeightThreshold = 1.0f; // 判定为蹲下的高度阈值
+    public float crouchHeightThreshold = 0.5f; // 判定为蹲下的高度阈值
     public float damageInterval = 2.0f; // 伤害间隔时间，避免连续造成伤害
     
     private float timer = 0f;
@@ -72,7 +72,19 @@ public class LaserRing : MonoBehaviour
     // 检查玩家是否蹲下
     bool IsPlayerCrouching(Collider playerCollider)
     {
-        // 方法1：检查碰撞体高度
+        // 方法1：优先使用新的PlayerColliderController.IsPlayerSquatting方法
+        PlayerColliderController colliderController = playerCollider.GetComponent<PlayerColliderController>();
+        if (colliderController == null)
+        {
+            colliderController = playerCollider.GetComponentInParent<PlayerColliderController>();
+        }
+        
+        if (colliderController != null)
+        {
+            return colliderController.IsPlayerSquatting();
+        }
+        
+        // 方法2：检查碰撞体高度（后备方法）
         CapsuleCollider capsule = playerCollider as CapsuleCollider;
         if (capsule != null)
         {
@@ -80,14 +92,7 @@ public class LaserRing : MonoBehaviour
             return capsule.height < crouchHeightThreshold;
         }
         
-        // 方法2：尝试获取PlayerColliderController组件
-        PlayerColliderController colliderController = playerCollider.GetComponent<PlayerColliderController>();
-        if (colliderController != null && colliderController.capsuleCollider != null)
-        {
-            return colliderController.capsuleCollider.height < crouchHeightThreshold;
-        }
-        
-        // 方法3：检查碰撞体的世界空间高度
+        // 方法3：检查碰撞体的世界空间高度（最后的后备方法）
         // 计算碰撞体顶部与激光的相对高度
         float colliderTopY = playerCollider.bounds.max.y;
         float laserY = transform.position.y;
