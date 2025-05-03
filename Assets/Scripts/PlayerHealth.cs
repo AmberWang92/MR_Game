@@ -17,11 +17,10 @@ public class PlayerHealth : MonoBehaviour
 
     [Header("UI Positioning")]
     public Transform bossTransform; // Reference to the boss transform
-    public Vector3 offsetFromBoss = new Vector3(-0.5f, 1.0f, 0f); // Offset from boss (left upper)
+    public Vector3 offsetFromBoss = new Vector3(-0.5f, 1.5f, 0f); // Offset from boss (left upper)
     public Transform playerCamera; // Reference to the player's camera
     public float distanceFromBoss = 0.5f; // Distance from boss
     
-    // 添加一个标志，表示是否已经初始化
     private bool isInitialized = false;
 
     void Start()
@@ -29,18 +28,60 @@ public class PlayerHealth : MonoBehaviour
         // 初始化生命值
         currentLives = maxLives;
         
-        // 初始化UI
-        InitializeHeartsUI();
-        UpdateHeartsUI();
-        
         // 查找必要的引用
         FindReferences();
         
+        // 初始化心形UI
+        InitializeHeartsUI();
+        
+        // 更新心形UI显示
+        UpdateHeartsUI();
+        
         // 标记为已初始化
         isInitialized = true;
+        
+        // 更新UI位置
+        UpdateUIPosition();
+        
+        Debug.Log("PlayerHealth初始化完成，生命值：" + currentLives);
     }
-    
-    // 查找必要的引用
+
+    void Update()
+    {
+        // 如果引用丢失，尝试重新查找
+        if ((bossTransform == null || playerCamera == null) && isInitialized)
+        {
+            FindReferences();
+        }
+        // 每帧更新UI位置和朝向
+        UpdateUIPosition();
+    }
+
+    // 统一的UI位置更新方法
+    private void UpdateUIPosition()
+    {
+        if (bossTransform != null && playerCamera != null)
+        {
+            // 计算boss左上方的世界坐标
+            Vector3 leftUp = bossTransform.position
+                             + bossTransform.TransformDirection(offsetFromBoss.normalized) * distanceFromBoss
+                             + offsetFromBoss;
+            transform.position = leftUp;
+            // 让UI面向玩家摄像机
+            transform.LookAt(transform.position + (transform.position - playerCamera.position));
+        }
+    }
+
+    // 在重启或初始化相关方法里调用
+    public void Restart()
+    {
+        // 重置标志，以便在场景重新加载后重新初始化
+        isInitialized = false;
+        
+        // 重新加载当前场景
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
     void FindReferences()
     {
         // 如果player camera未指定，尝试查找主相机
@@ -52,20 +93,10 @@ public class PlayerHealth : MonoBehaviour
         // 如果boss transform未指定，尝试在场景中查找
         if (bossTransform == null)
         {
-            // 尝试查找带有特定标签的boss
-            GameObject bossObject = GameObject.FindGameObjectWithTag("Boss");
-            if (bossObject != null)
+            GameObject boss = GameObject.FindGameObjectWithTag("Boss");
+            if (boss != null)
             {
-                bossTransform = bossObject.transform;
-            }
-            else
-            {
-                // 如果没有找到带有Boss标签的对象，可以尝试通过名称查找
-                bossObject = GameObject.Find("Boss"); // 替换为你的boss对象名称
-                if (bossObject != null)
-                {
-                    bossTransform = bossObject.transform;
-                }
+                bossTransform = boss.transform;
             }
         }
         
@@ -76,73 +107,78 @@ public class PlayerHealth : MonoBehaviour
         }
     }
 
-    void Update()
-    {
-        // 如果引用丢失，尝试重新查找
-        if ((bossTransform == null || playerCamera == null) && isInitialized)
-        {
-            FindReferences();
-        }
-        
-        // 更新UI位置和朝向
-        if (bossTransform != null && playerCamera != null)
-        {
-            // Position the UI at the boss's left upper position
-            Vector3 targetPosition = bossTransform.position + offsetFromBoss;
-            
-            // Update the position of the health UI
-            transform.position = targetPosition;
-            
-            // Make the UI face the player camera
-            transform.LookAt(2 * transform.position - playerCamera.position);
-            
-            // Alternative rotation method if the above doesn't work well
-            // transform.rotation = Quaternion.LookRotation(transform.position - playerCamera.position);
-        }
-    }
-
     void InitializeHeartsUI()
     {
         // 清除现有的心形图标
-        foreach (GameObject heart in hearts)
+        foreach (var heart in hearts)
         {
-            if (heart != null)
-            {
-                Destroy(heart);
-            }
+            if (heart != null) Destroy(heart);
         }
         hearts.Clear();
-        
-        // 创建新的心形图标
+
+        // 检查必要的引用
+        if (heartPrefab == null)
+        {
+            Debug.LogError("PlayerHealth: heartPrefab 未赋值！");
+            return;
+        }
+        if (heartContainer == null)
+        {
+            Debug.LogError("PlayerHealth: heartContainer 未赋值！");
+            return;
+        }
+
+        // 实例化新的心形图标
         for (int i = 0; i < maxLives; i++)
         {
             GameObject heart = Instantiate(heartPrefab, heartContainer);
+            heart.SetActive(true);
             hearts.Add(heart);
+            Debug.Log($"实例化Heart {i+1}/{maxLives}，父物体：{heart.transform.parent.name}");
         }
+
+        Debug.Log($"初始化了 {hearts.Count} 个心形图标");
     }
 
-    public void TakeDamage(int amount = 1)
+    public void TakeDamage()
     {
-        currentLives -= amount;
-        currentLives = Mathf.Max(currentLives, 0);
-
-        Debug.Log("Player hit! Lives left: " + currentLives);
-        GetComponent<HapticTrigger>().TriggerHaptics(OVRInput.Controller.RTouch);
-        GetComponent<HapticTrigger>().TriggerHaptics(OVRInput.Controller.LTouch);
-
-        UpdateHeartsUI();
-
-        if (currentLives <= 0)
+        if (currentLives > 0)
         {
-            Die();
+            currentLives--;
+            UpdateHeartsUI();
+            
+            if (currentLives <= 0)
+            {
+                Die();
+            }
+            else
+            {
+                // 播放受伤音效或动画
+                GetComponent<HapticTrigger>().TriggerHaptics(OVRInput.Controller.RTouch);
+                GetComponent<HapticTrigger>().TriggerHaptics(OVRInput.Controller.LTouch);
+                Debug.Log("Player took damage! Lives remaining: " + currentLives);
+            }
         }
     }
 
     void UpdateHeartsUI()
     {
+        if (hearts.Count == 0)
+        {
+            Debug.LogWarning("UpdateHeartsUI: hearts列表为空！");
+            return;
+        }
+        
         for (int i = 0; i < hearts.Count; i++)
         {
-            hearts[i].SetActive(i < currentLives);
+            if (hearts[i] != null)
+            {
+                hearts[i].SetActive(i < currentLives);
+            }
+            else
+            {
+                Debug.LogWarning($"UpdateHeartsUI: 第{i+1}个heart为null！");
+            }
         }
         Debug.Log("❤️ x " + currentLives);
     }
@@ -156,15 +192,6 @@ public class PlayerHealth : MonoBehaviour
     {
         Debug.Log("Player died!");
         UIManager.Instance.ShowDeathUI();
-    }
-
-    public void Restart()
-    {
-        // 重置标志，以便在场景重新加载后重新初始化
-        isInitialized = false;
-        
-        // 重新加载当前场景
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     public void QuitGame()

@@ -3551,6 +3551,8 @@ MonoBehaviour:
   deathUI: {fileID: 1815622933}
   bossTransform: {fileID: 8351099323564999508, guid: e1c7a699eeab5524684fecc541af48be, type: 3}
   playerTransform: {fileID: 1262040940}
+  distanceFromPlayer: 1.5
+  heightOffset: 1.5
 --- !u!114 &193306723
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19442,8 +19444,20 @@ PrefabInstance:
       value: You died!
       objectReference: {fileID: 0}
     - target: {fileID: 551259511208907882, guid: f705a196bbfc1ea468e3561337a67989, type: 3}
+      propertyPath: m_margin.w
+      value: -31.027214
+      objectReference: {fileID: 0}
+    - target: {fileID: 551259511208907882, guid: f705a196bbfc1ea468e3561337a67989, type: 3}
       propertyPath: m_margin.z
       value: -142.26776
+      objectReference: {fileID: 0}
+    - target: {fileID: 551259511208907882, guid: f705a196bbfc1ea468e3561337a67989, type: 3}
+      propertyPath: m_fontStyle
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 551259511208907882, guid: f705a196bbfc1ea468e3561337a67989, type: 3}
+      propertyPath: m_TextStyleHashCode
+      value: 2193
       objectReference: {fileID: 0}
     - target: {fileID: 551259511208907882, guid: f705a196bbfc1ea468e3561337a67989, type: 3}
       propertyPath: m_HorizontalAlignment
@@ -19467,11 +19481,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 627582770834043185, guid: f705a196bbfc1ea468e3561337a67989, type: 3}
       propertyPath: _size.x
-      value: 100
+      value: 250
       objectReference: {fileID: 0}
     - target: {fileID: 627582770834043185, guid: f705a196bbfc1ea468e3561337a67989, type: 3}
       propertyPath: _size.y
-      value: 100
+      value: 300
       objectReference: {fileID: 0}
     - target: {fileID: 636890190502695074, guid: f705a196bbfc1ea468e3561337a67989, type: 3}
       propertyPath: m_AnchorMax.y
@@ -19511,11 +19525,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1053816235156750903, guid: f705a196bbfc1ea468e3561337a67989, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 100
+      value: 250
       objectReference: {fileID: 0}
     - target: {fileID: 1053816235156750903, guid: f705a196bbfc1ea468e3561337a67989, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 100
+      value: 300
       objectReference: {fileID: 0}
     - target: {fileID: 1053816235156750903, guid: f705a196bbfc1ea468e3561337a67989, type: 3}
       propertyPath: m_LocalScale.x
@@ -19703,11 +19717,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2846186253879426084, guid: f705a196bbfc1ea468e3561337a67989, type: 3}
       propertyPath: _size.x
-      value: 100
+      value: 250
       objectReference: {fileID: 0}
     - target: {fileID: 2846186253879426084, guid: f705a196bbfc1ea468e3561337a67989, type: 3}
       propertyPath: _size.y
-      value: 100
+      value: 300
       objectReference: {fileID: 0}
     - target: {fileID: 3076306212591169142, guid: f705a196bbfc1ea468e3561337a67989, type: 3}
       propertyPath: m_AnchorMax.y
@@ -19731,7 +19745,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3285628853638427860, guid: f705a196bbfc1ea468e3561337a67989, type: 3}
       propertyPath: m_ChildAlignment
-      value: 1
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 3343943876616608688, guid: f705a196bbfc1ea468e3561337a67989, type: 3}
       propertyPath: m_AnchorMax.y
@@ -19894,6 +19908,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5797324766491596840, guid: f705a196bbfc1ea468e3561337a67989, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5797324766491596840, guid: f705a196bbfc1ea468e3561337a67989, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -19972,6 +19990,10 @@ PrefabInstance:
     - target: {fileID: 6931305584077026732, guid: f705a196bbfc1ea468e3561337a67989, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -20
+      objectReference: {fileID: 0}
+    - target: {fileID: 7125365989921663213, guid: f705a196bbfc1ea468e3561337a67989, type: 3}
+      propertyPath: m_ChildAlignment
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 7658954118029116754, guid: f705a196bbfc1ea468e3561337a67989, type: 3}
       propertyPath: m_AnchorMax.y
@@ -22758,9 +22780,9 @@ MonoBehaviour:
   restartDelay: 3
   heartPrefab: {fileID: 131261772}
   heartContainer: {fileID: 792645472}
-  bossTransform: {fileID: 0}
+  bossTransform: {fileID: 8351099323564999508, guid: e1c7a699eeab5524684fecc541af48be, type: 3}
   offsetFromBoss: {x: -0.5, y: 0.5, z: 0}
-  playerCamera: {fileID: 0}
+  playerCamera: {fileID: 1262040940}
   distanceFromBoss: 0.5
 --- !u!114 &1262040943
 MonoBehaviour:
@@ -22793,6 +22815,9 @@ MonoBehaviour:
   headsetTransform: {fileID: 1262040940}
   minHeight: 1
   maxHeight: 1.7
+  standingHeight: 1.5
+  squatThreshold: 0.7
+  isSquatting: 0
 --- !u!1 &1263846999
 GameObject:
   m_ObjectHideFlags: 0
@@ -34916,6 +34941,10 @@ PrefabInstance:
     - target: {fileID: 1584904242601427027, guid: c9bbde70022917a48942903fe3ab424e, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3160432944293140306, guid: c9bbde70022917a48942903fe3ab424e, type: 3}
+      propertyPath: m_SortingOrder
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 3160432944293140306, guid: c9bbde70022917a48942903fe3ab424e, type: 3}
       propertyPath: m_AdditionalShaderChannelsFlag

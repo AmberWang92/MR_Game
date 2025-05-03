@@ -8,7 +8,7 @@ public class PlayerColliderController: MonoBehaviour
     public float maxHeight = 1.7f;     // 站立时的最大高度
     
     [Header("蹲下检测")]
-    public float standingHeight = 1.5f;  // 玩家正常站立时的大致高度
+    public float standingHeight = 1.6f;  // 玩家正常站立时的大致高度
     public float squatThreshold = 0.7f;  // 高度低于正常高度的这个比例时视为蹲下
     
     [HideInInspector]
