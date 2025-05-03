@@ -2,14 +2,12 @@ using UnityEngine;
 
 public class LaserRing : MonoBehaviour
 {
-    public float duration = 5f;         // 激光持续时间
-    public float expandSpeed = 0.8f;    // 每秒扩大多少倍
-    public float crouchHeightThreshold = 0.5f; // 判定为蹲下的高度阈值
-    public float damageInterval = 2.0f; // 伤害间隔时间，避免连续造成伤害
+    public float duration = 5f;
+    public float expandSpeed = 0.8f;
+    public float crouchHeightThreshold = 0.5f;
     
     private float timer = 0f;
     private Vector3 initialScale;
-    private float lastDamageTime = -1f; // 上次造成伤害的时间
    
     void Start()
     {
@@ -43,12 +41,6 @@ public class LaserRing : MonoBehaviour
     
     void CheckAndDamagePlayer(Collider other)
     {
-        // 检查冷却时间
-        if (Time.time - lastDamageTime < damageInterval)
-        {
-            return; // 还在冷却中，不造成伤害
-        }
-        
         PlayerHealth playerHealth = other.GetComponent<PlayerHealth>();
         if (playerHealth == null)
         {
@@ -60,11 +52,10 @@ public class LaserRing : MonoBehaviour
             // 检查玩家是否蹲下
             bool playerIsCrouching = IsPlayerCrouching(other);
             
-            // 如果玩家没有蹲下，才造成伤害
-            if (!playerIsCrouching)
+            // 如果玩家没有蹲下且不处于免疫状态，才造成伤害
+            if (!playerIsCrouching && !playerHealth.IsImmune())
             {
                 playerHealth.TakeDamage();
-                lastDamageTime = Time.time; // 更新上次造成伤害的时间
             }
         }
     }
@@ -72,7 +63,7 @@ public class LaserRing : MonoBehaviour
     // 检查玩家是否蹲下
     bool IsPlayerCrouching(Collider playerCollider)
     {
-        // 方法1：优先使用新的PlayerColliderController.IsPlayerSquatting方法
+        // 方法1：优先使用PlayerColliderController.IsPlayerSquatting方法
         PlayerColliderController colliderController = playerCollider.GetComponent<PlayerColliderController>();
         if (colliderController == null)
         {

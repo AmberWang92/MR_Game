@@ -10,16 +10,21 @@ public class PlayerHealth : MonoBehaviour
     private int currentLives;
 
     public float restartDelay = 3f;
+    
+    [Header("Damage Settings")]
+    public float immunityDuration = 3.0f; 
+    private float lastDamageTime = -10f;  
+    private bool isImmune = false;       
 
-    public GameObject heartPrefab; // Reference to the heart prefab
-    public Transform heartContainer; // Parent transform to hold heart instances
+    public GameObject heartPrefab; 
+    public Transform heartContainer; 
     private List<GameObject> hearts = new List<GameObject>();
 
     [Header("UI Positioning")]
-    public Transform bossTransform; // Reference to the boss transform
-    public Vector3 offsetFromBoss = new Vector3(-0.5f, 1.5f, 0f); // Offset from boss (left upper)
-    public Transform playerCamera; // Reference to the player's camera
-    public float distanceFromBoss = 0.5f; // Distance from boss
+    public Transform bossTransform; 
+    public Vector3 offsetFromBoss = new Vector3(-0.5f, 1.5f, 0f);
+    public Transform playerCamera; 
+    public float distanceFromBoss = 0.5f; 
     
     private bool isInitialized = false;
 
@@ -55,6 +60,23 @@ public class PlayerHealth : MonoBehaviour
         }
         // 每帧更新UI位置和朝向
         UpdateUIPosition();
+        
+        // 更新免疫状态
+        UpdateImmunityState();
+    }
+    
+    // 更新免疫状态
+    private void UpdateImmunityState()
+    {
+        // 如果当前处于免疫状态，检查是否已经过了免疫时间
+        if (isImmune)
+        {
+            if (Time.time - lastDamageTime >= immunityDuration)
+            {
+                isImmune = false;
+                Debug.Log("玩家免疫状态结束");
+            }
+        }
     }
 
     // 统一的UI位置更新方法
@@ -142,8 +164,19 @@ public class PlayerHealth : MonoBehaviour
 
     public void TakeDamage()
     {
+        // 如果处于免疫状态，不受伤害
+        if (isImmune)
+        {
+            Debug.Log("玩家处于免疫状态，无视伤害");
+            return;
+        }
+        
         if (currentLives > 0)
         {
+            // 设置免疫状态
+            isImmune = true;
+            lastDamageTime = Time.time;
+            
             currentLives--;
             UpdateHeartsUI();
             
@@ -156,7 +189,7 @@ public class PlayerHealth : MonoBehaviour
                 // 播放受伤音效或动画
                 GetComponent<HapticTrigger>().TriggerHaptics(OVRInput.Controller.RTouch);
                 GetComponent<HapticTrigger>().TriggerHaptics(OVRInput.Controller.LTouch);
-                Debug.Log("Player took damage! Lives remaining: " + currentLives);
+                Debug.Log("Player took damage! Lives remaining: " + currentLives + " (免疫时间开始：" + immunityDuration + "秒)");
             }
         }
     }
@@ -186,6 +219,12 @@ public class PlayerHealth : MonoBehaviour
     public int GetLives()
     {
         return currentLives;
+    }
+    
+    // 检查玩家是否处于免疫状态
+    public bool IsImmune()
+    {
+        return isImmune;
     }
 
     void Die()
