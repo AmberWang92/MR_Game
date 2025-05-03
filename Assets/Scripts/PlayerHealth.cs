@@ -30,25 +30,17 @@ public class PlayerHealth : MonoBehaviour
 
     void Start()
     {
-        // 初始化生命值
         currentLives = maxLives;
         
-        // 查找必要的引用
         FindReferences();
         
-        // 初始化心形UI
         InitializeHeartsUI();
-        
-        // 更新心形UI显示
+
         UpdateHeartsUI();
         
-        // 标记为已初始化
         isInitialized = true;
-        
-        // 更新UI位置
+    
         UpdateUIPosition();
-        
-        Debug.Log("PlayerHealth初始化完成，生命值：" + currentLives);
     }
 
     void Update()
@@ -74,7 +66,6 @@ public class PlayerHealth : MonoBehaviour
             if (Time.time - lastDamageTime >= immunityDuration)
             {
                 isImmune = false;
-                Debug.Log("玩家免疫状态结束");
             }
         }
     }
@@ -141,12 +132,10 @@ public class PlayerHealth : MonoBehaviour
         // 检查必要的引用
         if (heartPrefab == null)
         {
-            Debug.LogError("PlayerHealth: heartPrefab 未赋值！");
             return;
         }
         if (heartContainer == null)
         {
-            Debug.LogError("PlayerHealth: heartContainer 未赋值！");
             return;
         }
 
@@ -156,10 +145,7 @@ public class PlayerHealth : MonoBehaviour
             GameObject heart = Instantiate(heartPrefab, heartContainer);
             heart.SetActive(true);
             hearts.Add(heart);
-            Debug.Log($"实例化Heart {i+1}/{maxLives}，父物体：{heart.transform.parent.name}");
         }
-
-        Debug.Log($"初始化了 {hearts.Count} 个心形图标");
     }
 
     public void TakeDamage()
@@ -167,7 +153,6 @@ public class PlayerHealth : MonoBehaviour
         // 如果处于免疫状态，不受伤害
         if (isImmune)
         {
-            Debug.Log("玩家处于免疫状态，无视伤害");
             return;
         }
         
@@ -189,7 +174,6 @@ public class PlayerHealth : MonoBehaviour
                 // 播放受伤音效或动画
                 GetComponent<HapticTrigger>().TriggerHaptics(OVRInput.Controller.RTouch);
                 GetComponent<HapticTrigger>().TriggerHaptics(OVRInput.Controller.LTouch);
-                Debug.Log("Player took damage! Lives remaining: " + currentLives + " (免疫时间开始：" + immunityDuration + "秒)");
             }
         }
     }
@@ -198,7 +182,6 @@ public class PlayerHealth : MonoBehaviour
     {
         if (hearts.Count == 0)
         {
-            Debug.LogWarning("UpdateHeartsUI: hearts列表为空！");
             return;
         }
         
@@ -207,11 +190,7 @@ public class PlayerHealth : MonoBehaviour
             if (hearts[i] != null)
             {
                 hearts[i].SetActive(i < currentLives);
-            }
-            else
-            {
-                Debug.LogWarning($"UpdateHeartsUI: 第{i+1}个heart为null！");
-            }
+            }         
         }
         Debug.Log("❤️ x " + currentLives);
     }
@@ -221,7 +200,6 @@ public class PlayerHealth : MonoBehaviour
         return currentLives;
     }
     
-    // 检查玩家是否处于免疫状态
     public bool IsImmune()
     {
         return isImmune;

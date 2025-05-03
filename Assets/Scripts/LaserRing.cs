@@ -4,10 +4,11 @@ public class LaserRing : MonoBehaviour
 {
     public float duration = 5f;
     public float expandSpeed = 0.8f;
-    public float crouchHeightThreshold = 0.5f;
+    public float damageRadius = 3.0f;  // 伤害检测半径
     
     private float timer = 0f;
     private Vector3 initialScale;
+    private float lastCheckTime = 0f;  // 上次检查时间
    
     void Start()
     {
@@ -22,73 +23,61 @@ public class LaserRing : MonoBehaviour
         float scaleFactor = 1f + expandSpeed * timer;
         transform.localScale = initialScale * scaleFactor;
 
+        // 每帧检测玩家
+        CheckPlayerDamage();
+
         if (timer >= duration)
         {
             Destroy(gameObject);
         }
     }
-
+    
+    void CheckPlayerDamage()
+    {
+        // 获取玩家头部位置（相机位置）
+        Transform playerHead = Camera.main?.transform;
+        if (playerHead == null) return;
+        
+        // 获取玩家健康组件
+        PlayerHealth playerHealth = FindObjectOfType<PlayerHealth>();
+        if (playerHealth == null) return;
+        
+        // 获取激光环的高度
+        float ringHeight = transform.position.y;
+        
+        // 获取玩家头部高度
+        float playerHeadHeight = playerHead.position.y;
+        
+        // 计算玩家头部与激光环的水平距离
+        Vector3 playerHeadXZ = new Vector3(playerHead.position.x, 0, playerHead.position.z);
+        Vector3 ringXZ = new Vector3(transform.position.x, 0, transform.position.z);
+        float horizontalDistance = Vector3.Distance(playerHeadXZ, ringXZ);
+        
+        // 调试输出
+        //Debug.Log($"Ring Height: {ringHeight}, Player Height: {playerHeadHeight}, Distance: {horizontalDistance}");
+        
+        // 检查玩家是否在激光环的伤害范围内
+        bool playerInRange = horizontalDistance < damageRadius * transform.localScale.x;
+        
+        // 简单的高度比较：如果玩家头部高于激光环，则造成伤害
+        bool playerIsStanding = playerHeadHeight > ringHeight;
+        
+        // 如果玩家在范围内，站立且不处于免疫状态，则造成伤害
+        if (playerInRange && playerIsStanding && !playerHealth.IsImmune())
+        {
+            playerHealth.TakeDamage();
+            Debug.Log("玩家受到激光环伤害！");
+        }
+    }
+    
+    // 保留这些方法用于可视化调试
     void OnTriggerEnter(Collider other)
     {
-        CheckAndDamagePlayer(other);
+        Debug.Log($"触发器进入: {other.name}");
     }
     
-    // 添加持续检测，这样当玩家蹲下时可以实时更新状态
     void OnTriggerStay(Collider other)
     {
-        CheckAndDamagePlayer(other);
-    }
-    
-    void CheckAndDamagePlayer(Collider other)
-    {
-        PlayerHealth playerHealth = other.GetComponent<PlayerHealth>();
-        if (playerHealth == null)
-        {
-            playerHealth = other.GetComponentInParent<PlayerHealth>();
-        }
-        
-        if (playerHealth != null)
-        {
-            // 检查玩家是否蹲下
-            bool playerIsCrouching = IsPlayerCrouching(other);
-            
-            // 如果玩家没有蹲下且不处于免疫状态，才造成伤害
-            if (!playerIsCrouching && !playerHealth.IsImmune())
-            {
-                playerHealth.TakeDamage();
-            }
-        }
-    }
-    
-    // 检查玩家是否蹲下
-    bool IsPlayerCrouching(Collider playerCollider)
-    {
-        // 方法1：优先使用PlayerColliderController.IsPlayerSquatting方法
-        PlayerColliderController colliderController = playerCollider.GetComponent<PlayerColliderController>();
-        if (colliderController == null)
-        {
-            colliderController = playerCollider.GetComponentInParent<PlayerColliderController>();
-        }
-        
-        if (colliderController != null)
-        {
-            return colliderController.IsPlayerSquatting();
-        }
-        
-        // 方法2：检查碰撞体高度（后备方法）
-        CapsuleCollider capsule = playerCollider as CapsuleCollider;
-        if (capsule != null)
-        {
-            // 如果碰撞体高度小于阈值，认为玩家蹲下了
-            return capsule.height < crouchHeightThreshold;
-        }
-        
-        // 方法3：检查碰撞体的世界空间高度（最后的后备方法）
-        // 计算碰撞体顶部与激光的相对高度
-        float colliderTopY = playerCollider.bounds.max.y;
-        float laserY = transform.position.y;
-        
-        // 如果碰撞体顶部低于激光，认为玩家蹲下了躲避激光
-        return colliderTopY < laserY;
+        Debug.Log($"触发器停留: {other.name}");
     }
 }

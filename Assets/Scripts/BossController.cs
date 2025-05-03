@@ -4,11 +4,11 @@ using Meta.XR.MRUtilityKit;
 
 public class BossController : MonoBehaviour
 {
-    public ParticleSystem inkEffect;
-    public float inkDuration = 3f;
-    public float attackInterval = 8f;
+    //public ParticleSystem inkEffect;
+    //public float inkDuration = 3f;
+    //private bool isSpraying = false;
 
-    private bool isSpraying = false;
+    public float attackInterval = 8f;
     private float timer = 0f;
     private Transform cameraTransform;
 
@@ -26,8 +26,6 @@ public class BossController : MonoBehaviour
 
     void OnSceneLoaded()
     {
-        Debug.Log("MRUK Initialized");
-
         // 获取当前房间和地板 Anchor
         var currentRoom = MRUK.Instance.GetCurrentRoom();
         if (currentRoom == null || currentRoom.FloorAnchor == null)
@@ -63,23 +61,23 @@ public class BossController : MonoBehaviour
 
         if (timer >= attackInterval)
         {
-            StartCoroutine(SprayInk());
+            //StartCoroutine(SprayInk());
             StartCoroutine(FireLaserRing());
             timer = 0f;
         }
     }
 
-    IEnumerator SprayInk()
-    {
-        Debug.Log("Ink Attack Incoming!");
-        isSpraying = true;
+    //IEnumerator SprayInk()
+    //{
+    //Debug.Log("Ink Attack Incoming!");
+    //isSpraying = true;
 
-        inkEffect.Play();
-        yield return new WaitForSeconds(inkDuration);
-        inkEffect.Stop();
+    //    inkEffect.Play();
+    //    yield return new WaitForSeconds(inkDuration);
+    //    inkEffect.Stop();
 
-        isSpraying = false;
-    }
+    //    isSpraying = false;
+    //}
 
     IEnumerator FireLaserRing()
     {
@@ -93,8 +91,8 @@ public class BossController : MonoBehaviour
         yield return null;
     }
 
-    public bool IsSpraying()
-    {
-        return isSpraying;
-    }
+    //public bool IsSpraying()
+    //{
+    //    return isSpraying;
+    //}
 }
