@@ -66,18 +66,17 @@ public class LaserRing : MonoBehaviour
         if (playerInRange && playerIsStanding && !playerHealth.IsImmune())
         {
             playerHealth.TakeDamage();
-            Debug.Log("玩家受到激光环伤害！");
         }
     }
     
-    // 保留这些方法用于可视化调试
-    void OnTriggerEnter(Collider other)
-    {
-        Debug.Log($"触发器进入: {other.name}");
-    }
+    //// 保留这些方法用于可视化调试
+    //void OnTriggerEnter(Collider other)
+    //{
+    //    Debug.Log($"触发器进入: {other.name}");
+    //}
     
-    void OnTriggerStay(Collider other)
-    {
-        Debug.Log($"触发器停留: {other.name}");
-    }
+    //void OnTriggerStay(Collider other)
+    //{
+    //    Debug.Log($"触发器停留: {other.name}");
+    //}
 }
