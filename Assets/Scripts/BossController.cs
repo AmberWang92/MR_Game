@@ -81,7 +81,6 @@ public class BossController : MonoBehaviour
 
     IEnumerator FireLaserRing()
     {
-        Debug.Log("Laser Attack Incoming!");
         GameObject laser = Instantiate(laserRingPrefab, laserSpawnPoint.position, Quaternion.identity);
 
 
