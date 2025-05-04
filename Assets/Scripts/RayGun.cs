@@ -24,7 +24,13 @@ public class RayGun : MonoBehaviour
     public AudioClip pickupSound;
     
     [Header("VR Interaction")]
-    public bool requireGrip = true;    
+    public bool requireGrip = true;
+    public bool hideControllerOnGrab = true; // 抓取时是否隐藏控制器
+    
+    [Header("Gun Position Adjustment")]
+    public Vector3 handPositionOffset = new Vector3(0, -0.05f, 0.1f); // 枪在手中的位置偏移
+    public Vector3 handRotationOffset = new Vector3(30, 0, 90); // 枪在手中的旋转偏移（已调整为顺时针旋转90度）
+    public float vibrationDuration = 0.1f; // 震动持续时间（秒）
     
     private AudioSource audioSource;
     private Rigidbody rb;
@@ -39,6 +45,10 @@ public class RayGun : MonoBehaviour
     private float rotationThreshold = 0.5f;
     private float noMovementTimer = 0f;
     private float noMovementThreshold = 0.5f; // 如果0.5秒没有移动，认为被放下
+    
+    // 控制器相关引用
+    private GameObject rightControllerVisual;
+    private GameObject leftControllerVisual;
     
     void Start()
     {
@@ -93,6 +103,48 @@ public class RayGun : MonoBehaviour
         
         // 输出枪口位置信息
         Debug.Log($"枪口位置: {muzzleTransform.position}, 枪口朝向: {muzzleTransform.forward}");
+        
+        // 查找控制器可视化组件
+        FindControllerVisuals();
+    }
+    
+    // 查找控制器可视化组件
+    void FindControllerVisuals()
+    {
+        // 根据Hierarchy结构直接查找控制器可视化组件
+        GameObject controllerInteractions = GameObject.Find("[BuildingBlock] Controller Interactions");
+        if (controllerInteractions != null)
+        {
+            // 查找左手控制器可视化组件
+            Transform leftController = controllerInteractions.transform.Find("LeftController");
+            if (leftController != null)
+            {
+                Transform visual = leftController.Find("OVRControllerVisual");
+                if (visual != null)
+                {
+                    leftControllerVisual = visual.gameObject;
+                    Debug.Log("找到左手控制器可视化组件");
+                }
+            }
+            
+            // 查找右手控制器可视化组件
+            Transform rightController = controllerInteractions.transform.Find("RightController");
+            if (rightController != null)
+            {
+                Transform visual = rightController.Find("OVRControllerVisual");
+                if (visual != null)
+                {
+                    rightControllerVisual = visual.gameObject;
+                    Debug.Log("找到右手控制器可视化组件");
+                }
+            }
+        }
+        else
+        {
+            Debug.LogWarning("未找到 [BuildingBlock] Controller Interactions 节点");
+        }
+        
+        Debug.Log($"控制器可视化组件查找结果 - 右手: {(rightControllerVisual != null ? "找到" : "未找到")}, 左手: {(leftControllerVisual != null ? "找到" : "未找到")}");
     }
     
     void Update()
@@ -100,9 +152,12 @@ public class RayGun : MonoBehaviour
         // 检测是否被抓取
         CheckIfGrabbed();
         
-        // 只有当被抓取时才检查射击输入
+        // 只有当被抓取时才检查射击输入和更新位置
         if (isGrabbed)
         {
+            // 更新枪的位置和旋转，使其与控制器对齐
+            UpdateGunTransform();
+            
             // 根据当前使用的控制器选择正确的射击按钮
             OVRInput.RawButton currentShootButton = 
                 (activeController == OVRInput.Controller.RTouch) ? rightHandShootButton : leftHandShootButton;
@@ -125,6 +180,43 @@ public class RayGun : MonoBehaviour
             {
                 Fire();
             }
+        }
+    }
+    
+    // 更新枪的位置和旋转，使其与控制器对齐
+    void UpdateGunTransform()
+    {
+        if (activeController == OVRInput.Controller.None)
+            return;
+            
+        Transform controllerTransform = null;
+        
+        // 获取当前控制器的Transform
+        if (activeController == OVRInput.Controller.RTouch)
+        {
+            GameObject rightHand = GameObject.Find("RightHandAnchor");
+            if (rightHand != null)
+                controllerTransform = rightHand.transform;
+        }
+        else if (activeController == OVRInput.Controller.LTouch)
+        {
+            GameObject leftHand = GameObject.Find("LeftHandAnchor");
+            if (leftHand != null)
+                controllerTransform = leftHand.transform;
+        }
+        
+        if (controllerTransform != null)
+        {
+            // 使用Inspector中可配置的偏移量
+            Vector3 positionOffset = handPositionOffset;
+            Quaternion rotationOffset = Quaternion.Euler(handRotationOffset);
+            
+            // 将偏移量从本地空间转换到世界空间
+            Vector3 worldPositionOffset = controllerTransform.TransformDirection(positionOffset);
+            
+            // 应用位置和旋转
+            transform.position = controllerTransform.position + worldPositionOffset;
+            transform.rotation = controllerTransform.rotation * rotationOffset;
         }
     }
     
@@ -209,6 +301,16 @@ public class RayGun : MonoBehaviour
             rb.isKinematic = true; // 被抓取时不受物理影响
         }
         
+        // 立即更新枪的位置和旋转
+        UpdateGunTransform();
+        
+        // 隐藏对应的控制器模型
+        if (hideControllerOnGrab)
+        {
+            SetControllerVisibility(false);
+            Debug.Log("尝试隐藏控制器视觉模型");
+        }
+        
         Debug.Log($"射线枪被{(activeController == OVRInput.Controller.RTouch ? "右手" : "左手")}抓取");
     }
     
@@ -232,10 +334,37 @@ public class RayGun : MonoBehaviour
             }
         }
         
+        // 显示控制器模型
+        if (hideControllerOnGrab)
+        {
+            SetControllerVisibility(true);
+        }
+        
         // 重置控制器
         activeController = OVRInput.Controller.None;
         
         Debug.Log("射线枪被释放");
+    }
+    
+    // 设置控制器可见性
+    void SetControllerVisibility(bool visible)
+    {
+        Debug.Log($"设置控制器可见性: {visible}, 活跃控制器: {activeController}");
+        
+        if (activeController == OVRInput.Controller.RTouch && rightControllerVisual != null)
+        {
+            rightControllerVisual.SetActive(visible);
+            Debug.Log($"右手控制器已{(visible ? "显示" : "隐藏")}");
+        }
+        else if (activeController == OVRInput.Controller.LTouch && leftControllerVisual != null)
+        {
+            leftControllerVisual.SetActive(visible);
+            Debug.Log($"左手控制器已{(visible ? "显示" : "隐藏")}");
+        }
+        else
+        {
+            Debug.LogWarning($"无法设置控制器可见性，控制器视觉模型可能未找到。右手: {rightControllerVisual != null}, 左手: {leftControllerVisual != null}");
+        }
     }
     
     public void Fire()
@@ -259,9 +388,6 @@ public class RayGun : MonoBehaviour
         Vector3 rayOrigin = muzzleTransform.position;
         Vector3 rayDirection = muzzleTransform.forward;
         
-        // 输出调试信息
-        Debug.Log($"射击起点: {rayOrigin}, 方向: {rayDirection}");
-        
         // 默认的激光线终点
         Vector3 endPoint = rayOrigin + rayDirection * maxDistance;
         
@@ -272,25 +398,31 @@ public class RayGun : MonoBehaviour
             // 更新激光线终点到击中点
             endPoint = hit.point;
             
-            // 输出调试信息
+            // 输出详细的调试信息
             Debug.Log($"射线击中: {hit.collider.name}, 位置: {hit.point}, 距离: {hit.distance}");
             
-            // 检查是否击中Boss
-            BossHealth bossHealth = hit.collider.GetComponent<BossHealth>();
-            if (bossHealth == null)
-            {
-                bossHealth = hit.collider.GetComponentInParent<BossHealth>();
-            }
+            // 检查是否击中了Ghost物体上的碰撞器
+            bool hitGhostCollider = IsGhostCollider(hit.collider);
             
-            // 如果击中Boss，造成伤害
-            if (bossHealth != null)
+            // 如果击中Ghost的碰撞器，造成伤害
+            if (hitGhostCollider)
             {
-                bossHealth.TakeDamage((int)damage);
-                Debug.Log($"击中Boss！造成 {damage} 点伤害");
+                // 查找Boss的BossHealth组件
+                BossHealth bossHealth = GetBossHealthFromGhost(hit.transform);
+                
+                if (bossHealth != null)
+                {
+                    bossHealth.TakeDamage((int)damage);
+                    Debug.Log($"击中Boss弱点！造成 {damage} 点伤害");
+                }
+                else
+                {
+                    Debug.LogWarning("击中了Ghost碰撞器，但未找到BossHealth组件");
+                }
             }
             else
             {
-                Debug.Log($"射线击中物体: {hit.collider.name}，但未找到BossHealth组件");
+                Debug.Log("射线未击中Boss弱点");
             }
             
             // 创建击中效果
@@ -304,15 +436,175 @@ public class RayGun : MonoBehaviour
         // 创建激光线
         CreateLaser(rayOrigin, endPoint);
         
-        // 添加控制器震动反馈
+        // 添加控制器震动反馈 - 使用可配置的震动持续时间
         if (activeController == OVRInput.Controller.RTouch)
         {
             OVRInput.SetControllerVibration(0.5f, 0.5f, OVRInput.Controller.RTouch);
+            StartCoroutine(StopVibration(OVRInput.Controller.RTouch));
         }
         else if (activeController == OVRInput.Controller.LTouch)
         {
             OVRInput.SetControllerVibration(0.5f, 0.5f, OVRInput.Controller.LTouch);
+            StartCoroutine(StopVibration(OVRInput.Controller.LTouch));
         }
+    }
+    
+    // 检查是否是Ghost物体上的碰撞器
+    private bool IsGhostCollider(Collider collider)
+    {
+        // 获取碰撞器所在的GameObject
+        GameObject hitObject = collider.gameObject;
+        
+        // 检查该物体是否直接附加在名为"Ghost"的物体上
+        if (hitObject.transform.parent != null && hitObject.transform.parent.name == "Ghost")
+        {
+            Debug.Log("击中了Ghost物体上的碰撞器");
+            return true;
+        }
+        
+        // 或者检查该物体本身是否名为"Ghost"
+        if (hitObject.name == "Ghost")
+        {
+            Debug.Log("击中了Ghost物体本身");
+            return true;
+        }
+        
+        Debug.Log($"击中的物体不是Ghost的碰撞器: {hitObject.name}");
+        return false;
+    }
+    
+    // 从Ghost物体获取BossHealth组件
+    private BossHealth GetBossHealthFromGhost(Transform hitTransform)
+    {
+        // 首先尝试找到Ghost物体
+        Transform ghostTransform = hitTransform;
+        
+        // 如果击中的不是Ghost本身，尝试找到其父物体Ghost
+        if (ghostTransform.name != "Ghost")
+        {
+            // 向上查找，直到找到名为"Ghost"的物体
+            Transform current = ghostTransform.parent;
+            while (current != null)
+            {
+                if (current.name == "Ghost")
+                {
+                    ghostTransform = current;
+                    break;
+                }
+                current = current.parent;
+            }
+        }
+        
+        // 如果找到了Ghost物体
+        if (ghostTransform.name == "Ghost")
+        {
+            // 根据您的预制体结构，BossHealth应该在Ghost的父物体上
+            if (ghostTransform.parent != null)
+            {
+                BossHealth bossHealth = ghostTransform.parent.GetComponent<BossHealth>();
+                if (bossHealth != null)
+                {
+                    Debug.Log($"在Ghost的父物体 {ghostTransform.parent.name} 上找到BossHealth组件");
+                    return bossHealth;
+                }
+            }
+            
+            // 如果父物体上没有，尝试在根物体上查找
+            BossHealth rootBossHealth = ghostTransform.root.GetComponent<BossHealth>();
+            if (rootBossHealth != null)
+            {
+                Debug.Log($"在根物体 {ghostTransform.root.name} 上找到BossHealth组件");
+                return rootBossHealth;
+            }
+        }
+        
+        Debug.LogWarning("未找到BossHealth组件");
+        return null;
+    }
+    
+    // 获取物体的完整路径，用于调试
+    private string GetFullPath(Transform transform)
+    {
+        string path = transform.name;
+        Transform parent = transform.parent;
+        
+        while (parent != null)
+        {
+            path = parent.name + "/" + path;
+            parent = parent.parent;
+        }
+        
+        return path;
+    }
+    
+    // 检查是否击中了Ghost物体上的Capsule Collider
+    private bool CheckIfHitGhostCapsule(Collider collider)
+    {
+        // 输出调试信息
+        Debug.Log($"检查碰撞器: {collider.name}");
+        
+        // 检查是否是Capsule
+        bool isCapsule = collider.name.ToLower().Contains("capsule");
+        Debug.Log($"是否是Capsule: {isCapsule}");
+        
+        if (!isCapsule)
+            return false;
+            
+        // 检查是否属于Ghost
+        bool isPartOfGhost = false;
+        Transform current = collider.transform;
+        
+        while (current != null)
+        {
+            Debug.Log($"检查父物体: {current.name}");
+            
+            if (current.name.ToLower().Contains("ghost"))
+            {
+                isPartOfGhost = true;
+                Debug.Log($"找到Ghost父物体: {current.name}");
+                break;
+            }
+            current = current.parent;
+        }
+        
+        Debug.Log($"是否属于Ghost: {isPartOfGhost}");
+        return isPartOfGhost;
+    }
+    
+    // 查找BossHealth组件
+    private BossHealth FindBossHealth(Transform hitTransform)
+    {
+        // 首先检查自身
+        BossHealth bossHealth = hitTransform.GetComponent<BossHealth>();
+        if (bossHealth != null)
+        {
+            Debug.Log($"在击中物体上找到BossHealth组件");
+            return bossHealth;
+        }
+        
+        // 然后检查父物体
+        Transform current = hitTransform.parent;
+        while (current != null)
+        {
+            bossHealth = current.GetComponent<BossHealth>();
+            if (bossHealth != null)
+            {
+                Debug.Log($"在父物体 {current.name} 上找到BossHealth组件");
+                return bossHealth;
+            }
+            current = current.parent;
+        }
+        
+        // 最后检查根物体
+        bossHealth = hitTransform.root.GetComponent<BossHealth>();
+        if (bossHealth != null)
+        {
+            Debug.Log($"在根物体 {hitTransform.root.name} 上找到BossHealth组件");
+            return bossHealth;
+        }
+        
+        Debug.LogWarning("未找到BossHealth组件");
+        return null;
     }
     
     // 创建激光线
@@ -382,6 +674,13 @@ public class RayGun : MonoBehaviour
         
         // 设置自动销毁
         Destroy(hitEffect, 2.0f);
+    }
+    
+    // 停止控制器震动的协程
+    private IEnumerator StopVibration(OVRInput.Controller controller)
+    {
+        yield return new WaitForSeconds(vibrationDuration);
+        OVRInput.SetControllerVibration(0, 0, controller);
     }
     
     // 当被Oculus Interaction系统抓取时调用

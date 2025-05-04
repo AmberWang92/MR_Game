@@ -22830,7 +22830,7 @@ MonoBehaviour:
   heartPrefab: {fileID: 131261772}
   heartContainer: {fileID: 792645472}
   bossTransform: {fileID: 8351099323564999508, guid: e1c7a699eeab5524684fecc541af48be, type: 3}
-  offsetFromBoss: {x: -0.5, y: 0.5, z: 0}
+  offsetFromBoss: {x: -0.5, y: 0.2, z: 0}
   playerCamera: {fileID: 1262040940}
   distanceFromBoss: 0.5
 --- !u!114 &1262040943
