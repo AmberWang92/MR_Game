@@ -28,8 +28,8 @@ public class RayGun : MonoBehaviour
     public bool hideControllerOnGrab = true; // 抓取时是否隐藏控制器
     
     [Header("Gun Position Adjustment")]
-    public Vector3 handPositionOffset = new Vector3(0, -0.05f, 0.1f); // 枪在手中的位置偏移
-    public Vector3 handRotationOffset = new Vector3(30, 0, 90); // 枪在手中的旋转偏移（已调整为顺时针旋转90度）
+    public Vector3 handPositionOffset = new Vector3(0, 0, 0); // 枪在手中的位置偏移
+    public Vector3 handRotationOffset = new Vector3(0, 90, 0); // 枪在手中的旋转偏移（已调整为顺时针旋转90度）
     public float vibrationDuration = 0.1f; // 震动持续时间（秒）
     
     private AudioSource audioSource;

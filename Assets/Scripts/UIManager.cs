@@ -8,10 +8,9 @@ public class UIManager : MonoBehaviour
     
     // 可调整的UI位置参数
     [Header("UI位置设置")]
-    public float distanceFromPlayer = 1.0f; // UI与玩家的距离，从1.5米减少到1.0米
-    public float heightOffset = 0.8f;      // UI的高度偏移，从1.5米减少到0.8米
+    public float distanceFromPlayer = 1.0f; 
+    public float heightOffset = 0.8f;  
     
-
     void Awake()
     {
         if (Instance != null && Instance != this)

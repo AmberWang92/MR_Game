@@ -128,8 +128,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39b0d10afeb9fd648838130a4f9fbb78, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inkEffect: {fileID: 7346111455397636678}
-  inkDuration: 3
   attackInterval: 8
   laserRingPrefab: {fileID: 3879282727710824322, guid: e540516b2e73c4a4e90aec219b81e782, type: 3}
   laserSpawnPoint: {fileID: 7142247389384439642}

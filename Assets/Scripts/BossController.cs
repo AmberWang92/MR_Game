@@ -16,9 +16,21 @@ public class BossController : MonoBehaviour
     public Transform laserSpawnPoint;   
     public float laserDuration = 5f;    
 
+    // 添加Animator引用
+    private Animator animator;
+    // 动画触发器参数名
+    private const string ATTACK_TRIGGER = "Attack";
+
     void Start()
     {
         cameraTransform = Camera.main.transform;
+        
+        // 获取子物体上的Animator组件
+        animator = GetComponentInChildren<Animator>();
+        if (animator == null)
+        {
+            Debug.LogWarning("No Animator component found in Boss or its children!");
+        }
 
         // 注册场景加载完成的回调
         MRUK.Instance.RegisterSceneLoadedCallback(OnSceneLoaded);
@@ -81,8 +93,13 @@ public class BossController : MonoBehaviour
 
     IEnumerator FireLaserRing()
     {
-        GameObject laser = Instantiate(laserRingPrefab, laserSpawnPoint.position, Quaternion.identity);
+        // 触发攻击动画
+        if (animator != null)
+        {
+            animator.Play("attack");
+        }
 
+        GameObject laser = Instantiate(laserRingPrefab, laserSpawnPoint.position, Quaternion.identity);
 
         laser.transform.rotation = Quaternion.LookRotation(Vector3.up);
         Debug.Log("Laser Spawn Position: " + laserSpawnPoint);
