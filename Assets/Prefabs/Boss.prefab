@@ -128,10 +128,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39b0d10afeb9fd648838130a4f9fbb78, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackInterval: 8
+  attackInterval: 10
   laserRingPrefab: {fileID: 3879282727710824322, guid: e540516b2e73c4a4e90aec219b81e782, type: 3}
   laserSpawnPoint: {fileID: 7142247389384439642}
-  laserDuration: 5
+  laserDuration: 4
 --- !u!114 &1795113932199352939
 MonoBehaviour:
   m_ObjectHideFlags: 0

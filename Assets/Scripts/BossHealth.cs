@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
 
 public class BossHealth : MonoBehaviour
 {
@@ -58,21 +59,47 @@ public class BossHealth : MonoBehaviour
     {
         Debug.Log("Boss Defeated!");
 
+        // 停止背景音乐
+        AudioSource bossMusic = GetComponent<AudioSource>();
+        if (bossMusic != null && bossMusic.isPlaying)
+        {
+            // 淡出音乐
+            StartCoroutine(FadeOutMusic(bossMusic, 2.0f));
+        }
         
         // 触发死亡动画
         if (animator != null)
         {
-           
             animator.Play("surprised");
-      
         }
         
         Invoke("DestroyAfterAnimation", 3f); // 假设动画持续3秒
     }
     
+    // 音乐淡出协程
+    private IEnumerator FadeOutMusic(AudioSource audioSource, float duration)
+    {
+        float startVolume = audioSource.volume;
+        float startTime = Time.time;
+        
+        while (Time.time < startTime + duration)
+        {
+            float t = (Time.time - startTime) / duration;
+            audioSource.volume = Mathf.Lerp(startVolume, 0, t);
+            yield return null;
+        }
+        
+        audioSource.Stop();
+        audioSource.volume = startVolume; // 恢复原始音量，以防万一
+    }
+    
     void DestroyAfterAnimation()
     {
         //TODO: 可以在这里添加游戏胜利的逻辑
+        if(UIManager.Instance != null)
+        {
+            UIManager.Instance.ShowVictoryUI();
+        }
         Destroy(gameObject);
     }
 }

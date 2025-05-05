@@ -18,8 +18,9 @@ public class BossController : MonoBehaviour
 
     // 添加Animator引用
     private Animator animator;
-    // 动画触发器参数名
-    private const string ATTACK_TRIGGER = "Attack";
+    
+    // 背景音乐管理器引用
+    private AudioSource backgroundMusic;
 
     void Start()
     {
@@ -30,6 +31,24 @@ public class BossController : MonoBehaviour
         if (animator == null)
         {
             Debug.LogWarning("No Animator component found in Boss or its children!");
+        }
+
+        // 添加背景音乐组件
+        backgroundMusic = gameObject.AddComponent<AudioSource>();
+        
+        // 查找音乐资源
+        AudioClip bossMusic = Resources.Load<AudioClip>("BossMusic");
+        if (bossMusic != null)
+        {
+            backgroundMusic.clip = bossMusic;
+            backgroundMusic.loop = true;
+            backgroundMusic.volume = 0.1f;
+            backgroundMusic.Play();
+            Debug.Log("Boss背景音乐开始播放");
+        }
+        else
+        {
+            Debug.LogWarning("未找到背景音乐资源，请确保在Resources/BossMusic.mp3文件存在");
         }
 
         // 注册场景加载完成的回调

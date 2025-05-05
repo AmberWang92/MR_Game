@@ -4,17 +4,17 @@ using UnityEngine;
 
 public class RayGunSpawner : MonoBehaviour
 {
-    [Header("射线枪预制体")]
+    [Header("Ray Gun Prefab")]
     public GameObject rayGunPrefab; 
     
-    [Header("生成区域设置")]
+    [Header("Spawn Area Settings")]
     public float spawnHeight = 2.0f; 
     public float spawnRadius = 1.0f; 
     public float minDistanceFromBoss = 0.5f;
     
-    [Header("生成时间设置")]
-    public float initialSpawnDelay = 20.0f; // 游戏开始后多少秒生成第一把射线枪
-    public float respawnTime = 60.0f; // 射线枪被拾取后多久再次生成
+    [Header("Spawn Time Settings")]
+    public float initialSpawnDelay = 20.0f; 
+    public float respawnTime = 60.0f; 
     
     private Transform bossTransform;
     

@@ -209,7 +209,32 @@ public class PlayerHealth : MonoBehaviour
     {
         Debug.Log("Player died!");
         
+        // 先显示死亡UI
         UIManager.Instance.ShowDeathUI();
+        
+        // 找到场景中的Boss并让它消失
+        GameObject boss = GameObject.FindGameObjectWithTag("Boss");
+        if (boss != null)
+        {
+            // 尝试播放消失动画
+            Animator bossAnimator = boss.GetComponentInChildren<Animator>();
+            if (bossAnimator != null)
+            {
+                try
+                {
+                    bossAnimator.Play("surprised");
+                    Debug.Log("播放Boss消失动画");
+                }
+                catch (System.Exception e)
+                {
+                    Debug.LogError("播放Boss消失动画失败: " + e.Message);
+                }
+            }
+            
+            // 延迟销毁Boss对象，给动画留出播放时间
+            Destroy(boss, 2f);
+            Debug.Log("Boss将在2秒后消失");
+        }
     }
 
     public void QuitGame()
