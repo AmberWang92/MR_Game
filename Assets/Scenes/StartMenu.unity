@@ -4982,23 +4982,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8184080159589029462, guid: d9524152d1092244a851a183d92eed57, type: 3}
       propertyPath: m_text
-      value: XR Game
+      value: Ghost Gym
+      objectReference: {fileID: 0}
+    - target: {fileID: 8184080159589029462, guid: d9524152d1092244a851a183d92eed57, type: 3}
+      propertyPath: m_fontStyle
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 8184080159589029462, guid: d9524152d1092244a851a183d92eed57, type: 3}
       propertyPath: m_fontColor.b
-      value: 0.3907331
+      value: 0.6485047
       objectReference: {fileID: 0}
     - target: {fileID: 8184080159589029462, guid: d9524152d1092244a851a183d92eed57, type: 3}
       propertyPath: m_fontColor.g
-      value: 0
+      value: 0.020914912
       objectReference: {fileID: 0}
     - target: {fileID: 8184080159589029462, guid: d9524152d1092244a851a183d92eed57, type: 3}
       propertyPath: m_fontColor.r
-      value: 0.9150943
+      value: 0.8867924
       objectReference: {fileID: 0}
     - target: {fileID: 8184080159589029462, guid: d9524152d1092244a851a183d92eed57, type: 3}
       propertyPath: m_fontColor32.rgba
-      value: 4284743913
+      value: 4289005026
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -6401,7 +6405,8 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 551259511208907882, guid: f705a196bbfc1ea468e3561337a67989, type: 3}
       propertyPath: m_text
-      value: In this game, you need punch the boss and  avoid its attak.
+      value: You need to punch the ghost and crouch to avoid its attacks. You can
+        also find the Ray Gun to shoot it.
       objectReference: {fileID: 0}
     - target: {fileID: 551259511208907882, guid: f705a196bbfc1ea468e3561337a67989, type: 3}
       propertyPath: m_fontSize
@@ -6409,11 +6414,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 551259511208907882, guid: f705a196bbfc1ea468e3561337a67989, type: 3}
       propertyPath: m_margin.w
-      value: -43.56197
+      value: -64.81459
+      objectReference: {fileID: 0}
+    - target: {fileID: 551259511208907882, guid: f705a196bbfc1ea468e3561337a67989, type: 3}
+      propertyPath: m_margin.x
+      value: -4.077463
+      objectReference: {fileID: 0}
+    - target: {fileID: 551259511208907882, guid: f705a196bbfc1ea468e3561337a67989, type: 3}
+      propertyPath: m_margin.y
+      value: -12.765981
       objectReference: {fileID: 0}
     - target: {fileID: 551259511208907882, guid: f705a196bbfc1ea468e3561337a67989, type: 3}
       propertyPath: m_margin.z
-      value: -142.26776
+      value: -145.1802
+      objectReference: {fileID: 0}
+    - target: {fileID: 551259511208907882, guid: f705a196bbfc1ea468e3561337a67989, type: 3}
+      propertyPath: m_fontStyle
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 551259511208907882, guid: f705a196bbfc1ea468e3561337a67989, type: 3}
       propertyPath: m_fontSizeBase
@@ -6685,7 +6702,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2639264727254325107, guid: f705a196bbfc1ea468e3561337a67989, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2639264727254325107, guid: f705a196bbfc1ea468e3561337a67989, type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -6725,11 +6742,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3285628853638427860, guid: f705a196bbfc1ea468e3561337a67989, type: 3}
       propertyPath: m_Spacing
-      value: 5.6
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 3285628853638427860, guid: f705a196bbfc1ea468e3561337a67989, type: 3}
       propertyPath: m_ChildAlignment
       value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 3285628853638427860, guid: f705a196bbfc1ea468e3561337a67989, type: 3}
+      propertyPath: m_ChildForceExpandWidth
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3285628853638427860, guid: f705a196bbfc1ea468e3561337a67989, type: 3}
+      propertyPath: m_ChildForceExpandHeight
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3343943876616608688, guid: f705a196bbfc1ea468e3561337a67989, type: 3}
       propertyPath: m_AnchorMax.y
@@ -9128,6 +9153,7 @@ MonoBehaviour:
   punchThreshold: 1
   punchCooldown: 0.5
   punchDamage: 10
+  controllerType: 0
 --- !u!114 &659806987
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12060,7 +12086,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 886084714}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0}
+  m_LocalPosition: {x: 0, y: 0, z: 4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -12909,6 +12935,7 @@ MonoBehaviour:
   punchThreshold: 1
   punchCooldown: 0.5
   punchDamage: 10
+  controllerType: 0
 --- !u!135 &974627285
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -14056,8 +14083,6 @@ GameObject:
   - component: {fileID: 1056237118}
   - component: {fileID: 1056237123}
   - component: {fileID: 1056237122}
-  - component: {fileID: 1056237121}
-  - component: {fileID: 1056237120}
   m_Layer: 0
   m_Name: '[BuildingBlock] Camera Rig'
   m_TagString: MainCamera
@@ -14098,40 +14123,6 @@ MonoBehaviour:
   usePerEyeCameras: 0
   useFixedUpdateForTracking: 0
   disableEyeAnchorCameras: 0
---- !u!114 &1056237120
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1056237115}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: accf6a38a52a95d4c8528f71f2a09777, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  frequency: 1
-  amplitude: 1
-  duration: 1
---- !u!114 &1056237121
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1056237115}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f334cce957f1c874fa333fc0aa6cf0f1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  squatThresholdY: 1.2
-  onSquat:
-    m_PersistentCalls:
-      m_Calls: []
-  onStand:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!114 &1056237122
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14683,7 +14674,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1082525695}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0.000019092113}
+  m_LocalPosition: {x: 0, y: 0, z: 2.000002}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -18420,6 +18411,7 @@ MonoBehaviour:
   punchThreshold: 1
   punchCooldown: 0.5
   punchDamage: 10
+  controllerType: 0
 --- !u!135 &1340390895
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -27033,6 +27025,7 @@ MonoBehaviour:
   punchThreshold: 1
   punchCooldown: 0.5
   punchDamage: 10
+  controllerType: 0
 --- !u!114 &2011152087
 MonoBehaviour:
   m_ObjectHideFlags: 0

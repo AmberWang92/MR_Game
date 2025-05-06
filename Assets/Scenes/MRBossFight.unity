@@ -19249,7 +19249,7 @@ MonoBehaviour:
   spawnHeight: 2
   spawnRadius: 1
   minDistanceFromBoss: 0.5
-  initialSpawnDelay: 20
+  initialSpawnDelay: 10
   respawnTime: 60
 --- !u!4 &1041384632
 Transform:
@@ -30910,7 +30910,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1715690421
 MonoBehaviour:
   m_ObjectHideFlags: 0
