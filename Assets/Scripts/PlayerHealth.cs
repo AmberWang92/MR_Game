@@ -45,22 +45,20 @@ public class PlayerHealth : MonoBehaviour
 
     void Update()
     {
-        // 如果引用丢失，尝试重新查找
+        // If references are lost, try to re-find them
         if ((bossTransform == null || playerCamera == null) && isInitialized)
         {
             FindReferences();
         }
-        // 每帧更新UI位置和朝向
+
         UpdateUIPosition();
         
-        // 更新免疫状态
         UpdateImmunityState();
     }
     
-    // 更新免疫状态
+    // Update immunity state
     private void UpdateImmunityState()
     {
-        // 如果当前处于免疫状态，检查是否已经过了免疫时间
         if (isImmune)
         {
             if (Time.time - lastDamageTime >= immunityDuration)
@@ -70,40 +68,35 @@ public class PlayerHealth : MonoBehaviour
         }
     }
 
-    // 统一的UI位置更新方法
     private void UpdateUIPosition()
     {
         if (bossTransform != null && playerCamera != null)
         {
-            // 计算boss左上方的世界坐标
+            // Calculate the world position of the left-up corner of the boss
             Vector3 leftUp = bossTransform.position
                              + bossTransform.TransformDirection(offsetFromBoss.normalized) * distanceFromBoss
                              + offsetFromBoss;
             transform.position = leftUp;
-            // 让UI面向玩家摄像机
+            // Make the UI face the player camera
             transform.LookAt(transform.position + (transform.position - playerCamera.position));
         }
     }
 
-    // 在重启或初始化相关方法里调用
+    // In restart or initialization related methods
     public void Restart()
     {
-        // 重置标志，以便在场景重新加载后重新初始化
         isInitialized = false;
         
-        // 重新加载当前场景
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     void FindReferences()
     {
-        // 如果player camera未指定，尝试查找主相机
         if (playerCamera == null)
         {
             playerCamera = Camera.main?.transform;
         }
         
-        // 如果boss transform未指定，尝试在场景中查找
         if (bossTransform == null)
         {
             GameObject boss = GameObject.FindGameObjectWithTag("Boss");
@@ -113,7 +106,6 @@ public class PlayerHealth : MonoBehaviour
             }
         }
         
-        // 如果仍然没有找到boss，输出警告
         if (bossTransform == null)
         {
             Debug.LogWarning("PlayerHealth: Boss transform not found. UI positioning will not work correctly.");
@@ -122,14 +114,14 @@ public class PlayerHealth : MonoBehaviour
 
     void InitializeHeartsUI()
     {
-        // 清除现有的心形图标
+        // clear existing heart icons
         foreach (var heart in hearts)
         {
             if (heart != null) Destroy(heart);
         }
         hearts.Clear();
 
-        // 检查必要的引用
+        // check necessary references
         if (heartPrefab == null)
         {
             return;
@@ -139,7 +131,7 @@ public class PlayerHealth : MonoBehaviour
             return;
         }
 
-        // 实例化新的心形图标
+        // instantiate new heart icons
         for (int i = 0; i < maxLives; i++)
         {
             GameObject heart = Instantiate(heartPrefab, heartContainer);
@@ -150,7 +142,6 @@ public class PlayerHealth : MonoBehaviour
 
     public void TakeDamage()
     {
-        // 如果处于免疫状态，不受伤害
         if (isImmune)
         {
             return;
@@ -158,7 +149,6 @@ public class PlayerHealth : MonoBehaviour
         
         if (currentLives > 0)
         {
-            // 设置免疫状态
             isImmune = true;
             lastDamageTime = Time.time;
             
@@ -209,21 +199,17 @@ public class PlayerHealth : MonoBehaviour
     {
         Debug.Log("Player died!");
         
-        // 先显示死亡UI
         UIManager.Instance.ShowDeathUI();
         
-        // 找到场景中的Boss并让它消失
         GameObject boss = GameObject.FindGameObjectWithTag("Boss");
         if (boss != null)
         {
-            // 尝试播放消失动画
             Animator bossAnimator = boss.GetComponentInChildren<Animator>();
             if (bossAnimator != null)
             {
                 try
                 {
                     bossAnimator.Play("surprised");
-                    Debug.Log("播放Boss消失动画");
                 }
                 catch (System.Exception e)
                 {
@@ -231,9 +217,8 @@ public class PlayerHealth : MonoBehaviour
                 }
             }
             
-            // 延迟销毁Boss对象，给动画留出播放时间
+            // delay destroying Boss object to allow animation to play
             Destroy(boss, 2f);
-            Debug.Log("Boss将在2秒后消失");
         }
     }
 

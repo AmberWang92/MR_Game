@@ -25,38 +25,36 @@ public class RayGun : MonoBehaviour
     
     [Header("VR Interaction")]
     public bool requireGrip = true;
-    public bool hideControllerOnGrab = true; // 抓取时是否隐藏控制器
+    public bool hideControllerOnGrab = true; 
     
     [Header("Gun Position Adjustment")]
-    public Vector3 handPositionOffset = new Vector3(0, 0, 0); // 枪在手中的位置偏移
-    public Vector3 handRotationOffset = new Vector3(0, 90, 0); // 枪在手中的旋转偏移（已调整为顺时针旋转90度）
-    public float vibrationDuration = 0.1f; // 震动持续时间（秒）
+    public Vector3 handPositionOffset = new Vector3(0, 0, 0); 
+    public Vector3 handRotationOffset = new Vector3(0, 90, 0); 
+    public float vibrationDuration = 0.1f; 
     
     private AudioSource audioSource;
     private Rigidbody rb;
     private bool isGrabbed = false;
     private OVRInput.Controller activeController = OVRInput.Controller.None;
-    private GameObject activeLaser; // 当前激活的激光线对象
+    private GameObject activeLaser; 
     
-    // 用于检测是否被抓取的变量
+    // variables for detecting if grabbed 
     private Vector3 lastPosition;
     private Quaternion lastRotation;
     private float movementThreshold = 0.01f;
     private float rotationThreshold = 0.5f;
     private float noMovementTimer = 0f;
-    private float noMovementThreshold = 0.5f; // 如果0.5秒没有移动，认为被放下
+    private float noMovementThreshold = 0.5f; 
     
-    // 控制器相关引用
+    // controller related references
     private GameObject rightControllerVisual;
     private GameObject leftControllerVisual;
     
     void Start()
     {
-        // 获取组件
         audioSource = GetComponent<AudioSource>();
         rb = GetComponent<Rigidbody>();
         
-        // 确保有Rigidbody组件
         if (rb == null)
         {
             rb = gameObject.AddComponent<Rigidbody>();
@@ -64,58 +62,55 @@ public class RayGun : MonoBehaviour
             rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
         }
         
-        // 如果没有音频源，添加一个
         if (audioSource == null)
         {
             audioSource = gameObject.AddComponent<AudioSource>();
             audioSource.playOnAwake = false;
-            audioSource.spatialBlend = 1.0f; // 3D音效
+            audioSource.spatialBlend = 1.0f; 
         }
         
-        // 如果没有设置枪口位置，使用自身位置
+        // if muzzleTransform is not set, use the gun's position as default
         if (muzzleTransform == null)
         {
-            Debug.LogWarning("枪口位置(muzzleTransform)未设置，使用枪身位置作为默认值");
-            
-            // 尝试查找名为"Muzzle"的子物体
+            // try to find the child object named "Muzzle"
             Transform muzzleChild = transform.Find("Muzzle");
             if (muzzleChild != null)
             {
                 muzzleTransform = muzzleChild;
-                Debug.Log("自动找到名为'Muzzle'的子物体作为枪口");
+                Debug.Log("found the muzzle");
             }
             else
             {
-                // 如果找不到，使用枪身位置
+                // if not found, use the gun's position
                 muzzleTransform = transform;
             }
         }
         
-        // 记录初始位置和旋转，用于检测移动
+        // record the initial position and rotation, used to detect movement
         lastPosition = transform.position;
         lastRotation = transform.rotation;
         
-        // 检查预制体是否已设置
+        // check if the laser prefab is set
         if (laserPrefab == null)
         {
-            Debug.LogWarning("激光线预制体未设置，请在Inspector中设置laserPrefab");
+            Debug.LogWarning("laser prefab is not set");
         }
         
-        // 输出枪口位置信息
-        Debug.Log($"枪口位置: {muzzleTransform.position}, 枪口朝向: {muzzleTransform.forward}");
+        // output muzzle position information
+        Debug.Log($"muzzle position: {muzzleTransform.position}, muzzle forward: {muzzleTransform.forward}");
         
-        // 查找控制器可视化组件
+        // find controller visuals
         FindControllerVisuals();
     }
     
-    // 查找控制器可视化组件
+    // find controller visuals
     void FindControllerVisuals()
     {
-        // 根据Hierarchy结构直接查找控制器可视化组件
+        // find controller visuals based on Hierarchy structure
         GameObject controllerInteractions = GameObject.Find("[BuildingBlock] Controller Interactions");
         if (controllerInteractions != null)
         {
-            // 查找左手控制器可视化组件
+            // find left controller visuals
             Transform leftController = controllerInteractions.transform.Find("LeftController");
             if (leftController != null)
             {
@@ -123,11 +118,11 @@ public class RayGun : MonoBehaviour
                 if (visual != null)
                 {
                     leftControllerVisual = visual.gameObject;
-                    Debug.Log("找到左手控制器可视化组件");
+                    Debug.Log("left controller visuals found");
                 }
             }
             
-            // 查找右手控制器可视化组件
+            // find right controller visuals
             Transform rightController = controllerInteractions.transform.Find("RightController");
             if (rightController != null)
             {
@@ -135,34 +130,31 @@ public class RayGun : MonoBehaviour
                 if (visual != null)
                 {
                     rightControllerVisual = visual.gameObject;
-                    Debug.Log("找到右手控制器可视化组件");
+                    Debug.Log("right controller visuals found");
                 }
             }
         }
         else
         {
-            Debug.LogWarning("未找到 [BuildingBlock] Controller Interactions 节点");
+            Debug.LogWarning("[BuildingBlock] Controller Interactions node not found");
         }
         
-        Debug.Log($"控制器可视化组件查找结果 - 右手: {(rightControllerVisual != null ? "找到" : "未找到")}, 左手: {(leftControllerVisual != null ? "找到" : "未找到")}");
+        Debug.Log($"controllers visuals found - right: {(rightControllerVisual != null ? "found" : "not found")}, left: {(leftControllerVisual != null ? "found" : "not found")}");
     }
     
     void Update()
     {
-        // 检测是否被抓取
         CheckIfGrabbed();
         
-        // 只有当被抓取时才检查射击输入和更新位置
+        // only check shooting input and update position when grabbed
         if (isGrabbed)
         {
-            // 更新枪的位置和旋转，使其与控制器对齐
             UpdateGunTransform();
             
-            // 根据当前使用的控制器选择正确的射击按钮
             OVRInput.RawButton currentShootButton = 
                 (activeController == OVRInput.Controller.RTouch) ? rightHandShootButton : leftHandShootButton;
             
-            // 如果需要握住扳机，检查握把按钮
+            // if need to grip the trigger, check grip button
             bool gripPressed = false;
             if (activeController == OVRInput.Controller.RTouch)
             {
@@ -175,7 +167,7 @@ public class RayGun : MonoBehaviour
             
             bool canShoot = !requireGrip || gripPressed;
             
-            // 检测射击按钮
+            // check if shoot button is pressed
             if (canShoot && OVRInput.GetDown(currentShootButton))
             {
                 Fire();
@@ -183,7 +175,7 @@ public class RayGun : MonoBehaviour
         }
     }
     
-    // 更新枪的位置和旋转，使其与控制器对齐
+    // update gun position and rotation to align with controller
     void UpdateGunTransform()
     {
         if (activeController == OVRInput.Controller.None)
@@ -207,11 +199,10 @@ public class RayGun : MonoBehaviour
         
         if (controllerTransform != null)
         {
-            // 使用Inspector中可配置的偏移量
             Vector3 positionOffset = handPositionOffset;
             Quaternion rotationOffset = Quaternion.Euler(handRotationOffset);
             
-            // 将偏移量从本地空间转换到世界空间
+            // 将偏移量从本地空间转换到世界空间 
             Vector3 worldPositionOffset = controllerTransform.TransformDirection(positionOffset);
             
             // 应用位置和旋转

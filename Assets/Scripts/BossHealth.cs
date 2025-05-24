@@ -10,16 +10,16 @@ public class BossHealth : MonoBehaviour
     private int currentHealth;
     private Animator animator;
     
-    // 动画触发器参数名
-    private const string HURT_TRIGGER = "Hurt";
-    private static readonly int DissolveState = Animator.StringToHash("Base Layer.dissolve");
+    // Animation trigger parameter name
+    //private const string HURT_TRIGGER = "Hurt";
+    //private static readonly int DissolveState = Animator.StringToHash("Base Layer.dissolve");
 
     void Start()
     {
         currentHealth = maxHealth;
         if (healthBarImage) healthBarImage.fillAmount = maxHealth/100;
         
-        // 获取子物体上的Animator组件
+        // Get child object's Animator component
         animator = GetComponentInChildren<Animator>();
         if (animator == null)
         {
@@ -43,11 +43,11 @@ public class BossHealth : MonoBehaviour
         if (healthBarImage) healthBarImage.fillAmount = currentHealth/100.0f;
 
         // 触发受伤动画
-        if (animator != null && currentHealth > 0)
-        {
-            animator.SetTrigger(HURT_TRIGGER);
-            Debug.Log("Boss hurt animation triggered");
-        }
+        //if (animator != null && currentHealth > 0)
+        //{
+        //    animator.SetTrigger(HURT_TRIGGER);
+        //    Debug.Log("Boss hurt animation triggered");
+        //}
 
         if (currentHealth <= 0)
         {
@@ -59,24 +59,24 @@ public class BossHealth : MonoBehaviour
     {
         Debug.Log("Boss Defeated!");
 
-        // 停止背景音乐
+        // Stop background music
         AudioSource bossMusic = GetComponent<AudioSource>();
         if (bossMusic != null && bossMusic.isPlaying)
         {
-            // 淡出音乐
+            // Fade out music
             StartCoroutine(FadeOutMusic(bossMusic, 2.0f));
         }
         
-        // 触发死亡动画
+        // Trigger death animation
         if (animator != null)
         {
             animator.Play("surprised");
         }
         
-        Invoke("DestroyAfterAnimation", 3f); // 假设动画持续3秒
+        Invoke("DestroyAfterAnimation", 3f); // Assuming animation duration is 3 seconds
     }
     
-    // 音乐淡出协程
+    // Music fade out coroutine
     private IEnumerator FadeOutMusic(AudioSource audioSource, float duration)
     {
         float startVolume = audioSource.volume;
@@ -90,12 +90,11 @@ public class BossHealth : MonoBehaviour
         }
         
         audioSource.Stop();
-        audioSource.volume = startVolume; // 恢复原始音量，以防万一
+        audioSource.volume = startVolume; 
     }
     
     void DestroyAfterAnimation()
-    {
-        //TODO: 可以在这里添加游戏胜利的逻辑
+    {   
         if(UIManager.Instance != null)
         {
             UIManager.Instance.ShowVictoryUI();

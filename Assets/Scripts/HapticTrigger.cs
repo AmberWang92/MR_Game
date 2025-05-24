@@ -30,4 +30,6 @@ public class HapticTrigger : MonoBehaviour
         yield return new WaitForSeconds(duration);
         OVRInput.SetControllerVibration(0, 0, controller);
     }
-    }
+}
+
+// Meta Oculus Integration SDK

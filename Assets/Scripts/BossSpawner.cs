@@ -7,7 +7,7 @@ public class BossSpawner : MonoBehaviour
 
     void Start()
     {
-        // 确保 MRUK 初始化完毕
+        // Register scene loaded callback
         MRUK.Instance.RegisterSceneLoadedCallback(OnSceneLoaded);
     }
 
@@ -15,7 +15,7 @@ public class BossSpawner : MonoBehaviour
     {
         Debug.Log("MRUK Initialized");
 
-        // 获取当前房间的所有地面类型 Anchor
+        // Get current room floor anchor
         var currentRoom = MRUK.Instance.GetCurrentRoom();
         if (currentRoom == null)
         {
@@ -31,7 +31,7 @@ public class BossSpawner : MonoBehaviour
             return;
         }
 
-        // 获取玩家位置和朝向
+        // Get camera transform
         var camera = Camera.main.transform;
         Vector3 forward = camera.forward;
         forward.y = 0;
