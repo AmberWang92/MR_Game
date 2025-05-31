@@ -2,81 +2,122 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 
+/// <summary>
+/// Manages the boss's health, health UI, and communicates with BossController when health thresholds are reached
+/// </summary>
 public class BossHealth : MonoBehaviour
 {
+    [Header("Health Settings")]
     public int maxHealth = 100;
     public Image healthBarImage;
-
-    private int currentHealth;
-    private Animator animator;
     
-    // Animation trigger parameter name
-    //private const string HURT_TRIGGER = "Hurt";
-    //private static readonly int DissolveState = Animator.StringToHash("Base Layer.dissolve");
-
+    [Header("Events")]
+    public float runAwayHealthThreshold = 0.5f; // Run away at 50% health
+    
+    // Internal variables
+    private int currentHealth;
+    private BossController bossController;
+    private Animator animator;
+    private bool isDead = false;
+    
     void Start()
     {
+        // Initialize health
         currentHealth = maxHealth;
-        if (healthBarImage) healthBarImage.fillAmount = maxHealth/100;
+        UpdateHealthBar();
         
-        // Get child object's Animator component
+        // Get required components
+        bossController = GetComponent<BossController>();
         animator = GetComponentInChildren<Animator>();
+        
+        if (bossController == null)
+        {
+            Debug.LogError("BossController component not found on the same GameObject as BossHealth!");
+        }
+        
         if (animator == null)
         {
             Debug.LogWarning("No Animator component found in Boss or its children!");
         }
     }
-
-    void Update()
+    
+    /// <summary>
+    /// Updates the health bar UI to reflect current health
+    /// </summary>
+    private void UpdateHealthBar()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (healthBarImage)
         {
-            Die();
+            healthBarImage.fillAmount = (float)currentHealth / maxHealth;
         }
     }
-
+    
+    /// <summary>
+    /// Public method to damage the boss
+    /// </summary>
+    /// <param name="amount">Amount of damage to apply</param>
     public void TakeDamage(int amount)
     {
+        if (isDead) return;
+        
+        // Apply damage
         currentHealth -= amount;
         currentHealth = Mathf.Max(0, currentHealth);
-
-        if (healthBarImage) healthBarImage.fillAmount = currentHealth/100.0f;
-
-        // 触发受伤动画
-        //if (animator != null && currentHealth > 0)
-        //{
-        //    animator.SetTrigger(HURT_TRIGGER);
-        //    Debug.Log("Boss hurt animation triggered");
-        //}
-
+        UpdateHealthBar();
+        
+        // Log damage for debugging
+        Debug.Log($"Boss took {amount} damage. Health: {currentHealth}/{maxHealth}");
+        
+        // Check health thresholds
+        float healthPercentage = (float)currentHealth / maxHealth;
+        
         if (currentHealth <= 0)
         {
             Die();
         }
+        else if (healthPercentage <= runAwayHealthThreshold && bossController != null)
+        {
+            // Notify BossController to run away
+            Debug.Log($"Boss health below {runAwayHealthThreshold * 100}%, triggering run away!");
+            bossController.OnHealthThresholdReached(BossController.HealthThreshold.RunAway);
+        }
+        else if (bossController != null)
+        {
+            // Notify BossController to play damage animation
+            bossController.OnHealthThresholdReached(BossController.HealthThreshold.TakeDamage);
+        }
     }
-
-    void Die()
+    
+    /// <summary>
+    /// Handles boss death
+    /// </summary>
+    private void Die()
     {
+        if (isDead) return;
+        isDead = true;
+        
         Debug.Log("Boss Defeated!");
-
+        
+        // Notify BossController about death
+        if (bossController != null)
+        {
+            bossController.OnHealthThresholdReached(BossController.HealthThreshold.Death);
+        }
+        
         // Stop background music
         AudioSource bossMusic = GetComponent<AudioSource>();
         if (bossMusic != null && bossMusic.isPlaying)
         {
-            // Fade out music
             StartCoroutine(FadeOutMusic(bossMusic, 2.0f));
         }
         
-        // Trigger death animation
-        if (animator != null)
-        {
-            animator.Play("surprised");
-        }
-        
-        Invoke("DestroyAfterAnimation", 3f); // Assuming animation duration is 3 seconds
+        // Schedule destruction
+        Invoke("DestroyAfterAnimation", 3f);
     }
     
-    // Music fade out coroutine
+    /// <summary>
+    /// Fades out the boss music
+    /// </summary>
     private IEnumerator FadeOutMusic(AudioSource audioSource, float duration)
     {
         float startVolume = audioSource.volume;
@@ -93,12 +134,23 @@ public class BossHealth : MonoBehaviour
         audioSource.volume = startVolume; 
     }
     
-    void DestroyAfterAnimation()
+    /// <summary>
+    /// Shows victory UI and destroys the boss GameObject
+    /// </summary>
+    private void DestroyAfterAnimation()
     {   
-        if(UIManager.Instance != null)
+        if (UIManager.Instance != null)
         {
             UIManager.Instance.ShowVictoryUI();
         }
         Destroy(gameObject);
+    }
+    
+    /// <summary>
+    /// Returns the current health percentage (0-1)
+    /// </summary>
+    public float GetHealthPercentage()
+    {
+        return (float)currentHealth / maxHealth;
     }
 }

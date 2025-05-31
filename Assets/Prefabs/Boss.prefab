@@ -15,6 +15,8 @@ GameObject:
   - component: {fileID: 605463719432469282}
   - component: {fileID: 1795113932199352939}
   - component: {fileID: 8403637401350239147}
+  - component: {fileID: 5038685759596778655}
+  - component: {fileID: 2983256074877060251}
   m_Layer: 0
   m_Name: Boss
   m_TagString: Boss
@@ -128,10 +130,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39b0d10afeb9fd648838130a4f9fbb78, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackInterval: 10
-  laserRingPrefab: {fileID: 3879282727710824322, guid: e540516b2e73c4a4e90aec219b81e782, type: 3}
-  laserSpawnPoint: {fileID: 7142247389384439642}
-  laserDuration: 4
+  navMeshAgent: {fileID: 5038685759596778655}
+  currentState: 0
 --- !u!114 &1795113932199352939
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -146,6 +146,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 100
   healthBarImage: {fileID: 3067211625047462518}
+  runAwayHealthThreshold: 0.5
 --- !u!54 &8403637401350239147
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -173,6 +174,44 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!195 &5038685759596778655
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 174762391070912320}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.7
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 3
+  m_BaseOffset: 1
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
+--- !u!114 &2983256074877060251
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 174762391070912320}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c6e9871117cb1c47a584489e982dcbf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attackInterval: 8
+  laserRingPrefab: {fileID: 3879282727710824322, guid: e540516b2e73c4a4e90aec219b81e782, type: 3}
+  laserSpawnPoint: {fileID: 7142247389384439642}
+  laserDuration: 5
 --- !u!1 &1128843137249721896
 GameObject:
   m_ObjectHideFlags: 0

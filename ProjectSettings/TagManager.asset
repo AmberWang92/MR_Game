@@ -15,6 +15,7 @@ TagManager:
   - QDSUITextSecondaryColor
   - QDSUISecondaryButton
   - QDSUIAccentColor
+  - NavMesh
   layers:
   - Default
   - TransparentFX
