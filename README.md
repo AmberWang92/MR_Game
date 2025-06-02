@@ -6,6 +6,8 @@ The player must squat to dodge the attack.
 When the laser light is over, the player stands up again and keeps punching the ghost or grab the ray gun to shoot the ghost.
 The goal is to beat the ghost, or the player loses.
 
+## Installation
+Download the Building.apk and install it through SideQuest Desktop App.
 
 ## AI system
 The Boss AI system uses a combination of State Machine + Fuzzy Logic + NavMesh path navigation to control the Boss's behavior.
