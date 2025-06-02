@@ -7,13 +7,11 @@ using UnityEngine;
 public class BossAttack : MonoBehaviour
 {
     [Header("Attack Settings")]
-    public float attackInterval = 8f;
     public GameObject laserRingPrefab;
     public Transform laserSpawnPoint;
-    public float laserDuration = 5f;
+    public float laserDuration = 3f;
 
     private Animator animator;
-    private float attackTimer = 0f;
 
     void Start()
     {
@@ -32,27 +30,11 @@ public class BossAttack : MonoBehaviour
         }
     }
 
-    void Update()
-    {
-        // 更新攻击计时器
-        attackTimer += Time.deltaTime;
-    }
+    // Update method removed as it was only updating the unused attack timer
 
-    /// <summary>
-    /// 检查是否可以攻击（攻击间隔已到）
-    /// </summary>
-    public bool CanAttack()
-    {
-        return attackTimer >= attackInterval;
-    }
+    // CanAttack method removed as it was not being used anywhere
 
-    /// <summary>
-    /// 重置攻击计时器
-    /// </summary>
-    public void ResetAttackTimer()
-    {
-        attackTimer = 0f;
-    }
+    // ResetAttackTimer method removed as it was only resetting the unused attack timer
 
     /// <summary>
     /// 执行攻击动作
@@ -60,7 +42,6 @@ public class BossAttack : MonoBehaviour
     public void PerformAttack()
     {
         StartCoroutine(FireLaserRing());
-        ResetAttackTimer();
     }
 
     /// <summary>

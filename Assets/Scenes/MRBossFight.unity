@@ -8067,7 +8067,6 @@ GameObject:
   - component: {fileID: 512553824}
   - component: {fileID: 512553823}
   - component: {fileID: 512553822}
-  - component: {fileID: 512553825}
   m_Layer: 0
   m_Name: Navmesh Surface
   m_TagString: Untagged
@@ -8090,9 +8089,18 @@ MonoBehaviour:
   SpawnOnStart: 1
   SeedValue: 0
   PrefabsToSpawn:
-  - Labels: 7224
+  - Labels: 7960
     Prefabs:
     - {fileID: 142896633232024273, guid: f8fd620b746a4804f916a531df223515, type: 3}
+    PrefabSelection: 0
+    MatchAspectRatio: 0
+    CalculateFacingDirection: 0
+    Scaling: 0
+    Alignment: 0
+    IgnorePrefabSize: 0
+  - Labels: 4
+    Prefabs:
+    - {fileID: 2200402941145261543, guid: f57e4c33e2313e44eb3a0fabccea16b3, type: 3}
     PrefabSelection: 0
     MatchAspectRatio: 0
     CalculateFacingDirection: 0
@@ -8127,7 +8135,7 @@ MonoBehaviour:
   m_OverrideTileSize: 0
   m_TileSize: 256
   m_OverrideVoxelSize: 0
-  m_VoxelSize: 0.16666667
+  m_VoxelSize: 0.06666667
   m_MinRegionArea: 2
   m_NavMeshData: {fileID: 0}
   m_BuildHeightMesh: 0
@@ -8146,18 +8154,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &512553825
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 512553821}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8fd812cd14121414f9cb961dbec2f28f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &512918044
 GameObject:
   m_ObjectHideFlags: 0
@@ -14330,11 +14326,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   navMeshAgent: {fileID: 0}
-  maxHealth: 5
-  attackInterval: 8
-  laserRingPrefab: {fileID: 0}
-  laserSpawnPoint: {fileID: 0}
-  laserDuration: 5
+  currentState: 0
+  attackWeight: 0.4
+  runAwayWeight: 0.4
+  idleWeight: 2.5
+  takeDamageWeight: 2
+  defeatWeight: 10
+  attackTimeFactor: 0.15
+  healthFactor: 2
+  debugTextComponent: {fileID: 0}
+  debugAttackProbComponent: {fileID: 0}
+  debugRunAwayProbComponent: {fileID: 0}
+  debugIdleProbComponent: {fileID: 0}
 --- !u!114 &607833995
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18494,7 +18497,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   punchThreshold: 1
   punchCooldown: 0.5
-  punchDamage: 10
+  punchDamage: 2
   controllerType: 2
 --- !u!114 &942631521
 MonoBehaviour:
@@ -21703,7 +21706,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1125848843}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -21759,7 +21762,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2.702, y: 1, z: 2.0183}
+  m_LocalScale: {x: 1.41, y: 1, z: 1.26}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -27773,7 +27776,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   punchThreshold: 1
   punchCooldown: 0.5
-  punchDamage: 10
+  punchDamage: 2
   controllerType: 1
 --- !u!114 &1456134078
 MonoBehaviour:

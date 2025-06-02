@@ -124,6 +124,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   duration: 5
   expandSpeed: 1
+  damageRadius: 3
 --- !u!1 &3879282727710824322
 GameObject:
   m_ObjectHideFlags: 0
@@ -247,5 +248,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 11a2dba332c93c245af06460c0800ccf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  duration: 5
+  duration: 3
   expandSpeed: 1
+  damageRadius: 3

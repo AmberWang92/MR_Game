@@ -11,8 +11,7 @@ public class BossHealth : MonoBehaviour
     public int maxHealth = 100;
     public Image healthBarImage;
     
-    [Header("Events")]
-    public float runAwayHealthThreshold = 0.5f; // Run away at 50% health
+    // No longer using health threshold for run away behavior
     
     // Internal variables
     private int currentHealth;
@@ -68,22 +67,15 @@ public class BossHealth : MonoBehaviour
         // Log damage for debugging
         Debug.Log($"Boss took {amount} damage. Health: {currentHealth}/{maxHealth}");
         
-        // Check health thresholds
-        float healthPercentage = (float)currentHealth / maxHealth;
-        
+        // Check if boss is defeated
         if (currentHealth <= 0)
         {
             Die();
         }
-        else if (healthPercentage <= runAwayHealthThreshold && bossController != null)
-        {
-            // Notify BossController to run away
-            Debug.Log($"Boss health below {runAwayHealthThreshold * 100}%, triggering run away!");
-            bossController.OnHealthThresholdReached(BossController.HealthThreshold.RunAway);
-        }
         else if (bossController != null)
         {
-            // Notify BossController to play damage animation
+            // Only notify BossController to play damage animation
+            // Run away behavior is now handled by BossController's fuzzy logic system
             bossController.OnHealthThresholdReached(BossController.HealthThreshold.TakeDamage);
         }
     }

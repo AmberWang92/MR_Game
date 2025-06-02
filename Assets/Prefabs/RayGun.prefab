@@ -308,7 +308,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rightHandShootButton: 67108864
   leftHandShootButton: 268435456
-  damage: 10
+  damage: 5
   maxDistance: 20
   muzzleTransform: {fileID: 6292938328899957102}
   laserPrefab: {fileID: 4225536046126256345, guid: e31d31904d694294c9146bb75de6de67, type: 3}
